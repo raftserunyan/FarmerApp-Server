@@ -1,0 +1,58 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build Docker image
+      run: >
+        docker build . 
+        --build-arg DB_CONNECTION_STRING="${{ secrets.DB_CONNECTION_STRING }}" 
+        --build-arg JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" 
+        --build-arg JWT_REFRESH_SECRET_KEY="${{ secrets.JWT_REFRESH_SECRET_KEY }}" 
+        --build-arg ACCESS_TOKEN_EXPIRY_MINUTES="${{ secrets.ACCESS_TOKEN_EXPIRY_MINUTES }}" 
+        --build-arg REFRESH_TOKEN_EXPIRY_MINUTES="${{ secrets.REFRESH_TOKEN_EXPIRY_MINUTES }}" 
+        -t ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server
+      
+    - name: Login to Docker Hub
+      run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+
+    - name: Push Docker image
+      run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server
+
+  deploy-on-server:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    - name: Install SSH key
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.REMOTE_SERVER_PRIVATE_SSH_KEY }}
+
+    - name: Add server to known hosts
+      run: ssh-keyscan ${{ secrets.REMOTE_SERVER_IP_ADDRESS }} >> ~/.ssh/known_hosts
+
+    - name: Copy docker-compose.yaml to server
+      run: scp docker-compose.yaml ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }}:~/farmer
+
+    - name: Login to Docker Hub
+      run: |
+        ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "echo \"${{ secrets.DOCKER_HUB_PASSWORD }}\" | docker login -u \"${{ secrets.DOCKER_HUB_USERNAME }}\" --password-stdin"
+ 
+    - name: Deploy to server
+      run: |
+        ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server"
+        ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "cd /home/${{ secrets.REMOTE_SERVER_USERNAME }}/farmer && docker-compose down"
+        ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "cd /home/${{ secrets.REMOTE_SERVER_USERNAME }}/farmer && docker-compose up -d"
