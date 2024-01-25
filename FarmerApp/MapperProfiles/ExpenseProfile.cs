@@ -11,7 +11,7 @@ namespace FarmerApp.MapperProfiles
         public ExpenseProfile()
         {
             CreateMap<ExpenseRequestModel, Expense>()
-                .ForMember(expense => expense.ExpenseDate,
+                .ForMember(expense => expense.Date,
                     opts => opts.MapFrom(expenseRequest => DateTime.Now));
 
             CreateMap<Expense, ExpenseResponseModel>();

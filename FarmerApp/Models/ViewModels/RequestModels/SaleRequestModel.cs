@@ -6,6 +6,7 @@ namespace FarmerApp.Models.ViewModels.RequestModels
 		public double Weight { get; set; }
 		public int PriceKG { get; set; }
 		public int CustomerId { get; set; }
-		public int Payed { get; set; }
+		public int Paid { get; set; }
+        public DateTime? Date { get; set; }
     }
 }

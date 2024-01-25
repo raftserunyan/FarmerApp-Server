@@ -17,7 +17,7 @@ namespace FarmerApp.MapperProfiles
 
             CreateMap<Sale, SaleResponseModel>()
                 .ForMember(saleResponse => saleResponse.Credit,
-                    opts => opts.MapFrom(sale => sale.Weight * sale.PriceKG - sale.Payed));
+                    opts => opts.MapFrom(sale => sale.Weight * sale.PriceKG - sale.Paid));
 
             //Map for Update
             CreateMap<Sale, Sale>();

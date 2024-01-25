@@ -9,8 +9,8 @@
 		public int PriceKG { get; set; }
 		public int CustomerId { get; set; }
 		public Customer CurrentCustomer { get; set; }
-		public int Payed { get; set; }
-		public DateTime Date { get; set; }
+		public int Paid { get; set; }
+		public DateTime? Date { get; set; }
 
         public int? UserId { get; set; }
         public User User { get; set; }

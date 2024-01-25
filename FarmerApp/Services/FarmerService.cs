@@ -46,7 +46,7 @@ namespace FarmerApp.Services
 
             var balance = new Balance();
 
-            var payed = sales.Sum(x => x.Payed);
+            var payed = sales.Sum(x => x.Paid);
 
             balance.Leftover += payed;
             balance.Leftover += (int)investments.Sum(x => x.Amount);
@@ -88,8 +88,8 @@ namespace FarmerApp.Services
             var balance = new ProductBalanceResponseModel
             {
                 Weight = sales.Sum(x => x.Weight),
-                Leftover = sales.Sum(x => x.Payed),
-                Debt = (int)sales.Sum(x => x.PriceKG * x.Weight) - sales.Sum(x => x.Payed)
+                Leftover = sales.Sum(x => x.Paid),
+                Debt = (int)sales.Sum(x => x.PriceKG * x.Weight) - sales.Sum(x => x.Paid)
             };
 
             return balance;
@@ -101,8 +101,8 @@ namespace FarmerApp.Services
 
             var balance = new Balance
             {
-                Leftover = sales.Sum(x => x.Payed),
-                Debt = (int)sales.Sum(x => x.PriceKG * x.Weight) - sales.Sum(x => x.Payed)
+                Leftover = sales.Sum(x => x.Paid),
+                Debt = (int)sales.Sum(x => x.PriceKG * x.Weight) - sales.Sum(x => x.Paid)
             };
 
             return balance;

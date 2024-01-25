@@ -10,7 +10,7 @@ namespace FarmerApp.MapperProfiles
         public TreatmentProfile()
         {
             CreateMap<TreatmentRequestModel, Treatment>()
-                .ForMember(treatment => treatment.TreatmentDate,
+                .ForMember(treatment => treatment.Date,
                     opts => opts.MapFrom(treatmentRequest => DateTime.Now));
 
             CreateMap<Treatment, TreatmentResponseModel>();
