@@ -72,8 +72,8 @@ jobs:
     - name: Get application version
       id: get_version
       run: |
-        CURRENT_VERSION=$(grep -oP 'Version = "v\K[^"]+' FarmerApp/Program.cs)
-        echo "current_version=$CURRENT_VERSION" >> $GITHUB_ENV
+        echo "current_version=$(grep -oP 'Version = "v\K[^"]+' FarmerApp/Program.cs)" >> $GITHUB_ENV
+        echo "::set-output name=current_version::$(grep -oP 'Version = "v\K[^"]+' FarmerApp/Program.cs)"
 
     - name: Build Docker image
       run: >
