@@ -78,7 +78,7 @@ jobs:
     - name: Build Docker image
       run: >
         docker build . 
-        --build-arg DB_CONNECTION_STRING="${{ secrets.DB_CONNECTION_STRING }}" 
+        --build-arg DB_CONNECTION_STRING="${{ secrets.DEV_DB_CONNECTION_STRING }}" 
         --build-arg JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" 
         --build-arg JWT_REFRESH_SECRET_KEY="${{ secrets.JWT_REFRESH_SECRET_KEY }}" 
         --build-arg ACCESS_TOKEN_EXPIRY_MINUTES="${{ secrets.ACCESS_TOKEN_EXPIRY_MINUTES }}" 
