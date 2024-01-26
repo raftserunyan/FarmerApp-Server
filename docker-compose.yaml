@@ -22,7 +22,7 @@ services:
   server:
     container_name: server
     restart: always
-    image: ${DOCKER_HUB_USERNAME}/farmerapp-server:latest
+    image: ${DOCKER_HUB_USERNAME}/farmerapp-server:1.1.0
     depends_on:
       - db
     ports:
