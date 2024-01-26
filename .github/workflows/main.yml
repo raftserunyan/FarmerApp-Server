@@ -60,10 +60,20 @@ jobs:
   build-and-push:
     needs: increment-version-if-needed
     runs-on: ubuntu-latest
+    outputs:
+      current_version: ${{ steps.get_version.outputs.current_version }}
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.PAT }}
+
+    - name: Get application version
+      id: get_version
+      run: |
+        CURRENT_VERSION=$(grep -oP 'Version = "v\K[^"]+' FarmerApp/Program.cs)
+        echo "current_version=$CURRENT_VERSION" >> $GITHUB_ENV
 
     - name: Build Docker image
       run: >
@@ -73,7 +83,7 @@ jobs:
         --build-arg JWT_REFRESH_SECRET_KEY="${{ secrets.JWT_REFRESH_SECRET_KEY }}" 
         --build-arg ACCESS_TOKEN_EXPIRY_MINUTES="${{ secrets.ACCESS_TOKEN_EXPIRY_MINUTES }}" 
         --build-arg REFRESH_TOKEN_EXPIRY_MINUTES="${{ secrets.REFRESH_TOKEN_EXPIRY_MINUTES }}" 
-        -t ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server
+        -t ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:$CURRENT_VERSION
       
     - name: Login to Docker Hub
       run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
@@ -106,6 +116,6 @@ jobs:
  
     - name: Deploy to server
       run: |
-        ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server"
+        ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:${{ needs.build-and-push.outputs.current_version }}"
         #ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "cd /home/${{ secrets.REMOTE_SERVER_USERNAME }}/farmer && docker-compose down"
         ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "cd /home/${{ secrets.REMOTE_SERVER_USERNAME }}/farmer && docker-compose up --no-deps server -d"

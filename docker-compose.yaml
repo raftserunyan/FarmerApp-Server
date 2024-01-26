@@ -30,3 +30,15 @@ services:
       - 127.0.0.1:8081:80
     logging:
       driver: json-file
+
+  dev_server:
+    container_name: dev_server
+    restart: always
+    image: ${DOCKER_HUB_USERNAME}/farmerapp-server:dev
+    depends_on:
+      - db
+    ports:
+      - 127.0.0.1:8084:443
+      - 127.0.0.1:8083:80
+    logging:
+      driver: json-file
