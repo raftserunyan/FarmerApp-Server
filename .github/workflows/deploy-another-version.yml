@@ -37,5 +37,5 @@ jobs:
 
     - name: Docker-compose down and up
       run: |
-        ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "cd /home/${{ secrets.REMOTE_SERVER_USERNAME }}/farmer && docker-compose down"
-        ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "cd /home/${{ secrets.REMOTE_SERVER_USERNAME }}/farmer && docker-compose up -d"
+        #ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "cd /home/${{ secrets.REMOTE_SERVER_USERNAME }}/farmer && docker-compose down"
+        ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "cd /home/${{ secrets.REMOTE_SERVER_USERNAME }}/farmer && docker-compose up --no-deps server -d"
