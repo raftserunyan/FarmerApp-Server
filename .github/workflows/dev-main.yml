@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline - DEV
 
 on:
   push:
@@ -83,8 +83,8 @@ jobs:
         --build-arg JWT_REFRESH_SECRET_KEY="${{ secrets.JWT_REFRESH_SECRET_KEY }}" 
         --build-arg ACCESS_TOKEN_EXPIRY_MINUTES="${{ secrets.ACCESS_TOKEN_EXPIRY_MINUTES }}" 
         --build-arg REFRESH_TOKEN_EXPIRY_MINUTES="${{ secrets.REFRESH_TOKEN_EXPIRY_MINUTES }}" 
-        #-t ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:$current_version
         -t ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:dev
+        #-t ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:$current_version
       
     - name: Login to Docker Hub
       run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
