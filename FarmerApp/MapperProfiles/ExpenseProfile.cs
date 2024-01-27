@@ -11,7 +11,7 @@ namespace FarmerApp.MapperProfiles
         {
             CreateMap<ExpenseRequestModel, Expense>();
             CreateMap<Expense, ExpenseResponseModel>();
-            CreateMap<Expense, Expense>();
+            CreateMap<Expense, Expense>(); 
         }
     }
 }
