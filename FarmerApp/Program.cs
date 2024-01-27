@@ -25,7 +25,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "FarmerAPI", Version = "v1.1.3" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "FarmerAPI", Version = "v1.1.4" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization",
@@ -34,19 +34,19 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.ApiKey
     });
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new string[] { }
-        }
-    });
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] { }
+                    }
+                });
     c.CustomSchemaIds(x => x.FullName);
 });
 
@@ -83,7 +83,6 @@ builder.Services.AddScoped<IInvestmentService, InvestmentService>();
 builder.Services.AddScoped<ITreatmentService, TreatmentService>();
 builder.Services.AddScoped<IFarmerService, FarmerService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
-builder.Services.AddScoped<ITargetService, TargetService>();
 
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
@@ -93,7 +92,6 @@ builder.Services.AddScoped<IInvestorRepository, InvestorRepository>();
 builder.Services.AddScoped<IInvestmentRepository, InvestmentRepository>();
 builder.Services.AddScoped<ITreatmentRepository, TreatmentRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<ITargetRepository, TargetRepository>();
 
 #endregion
 
