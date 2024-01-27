@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using FarmerApp.Exceptions;
+using System.Net;
 
 namespace FarmerApp.Middlewares
 {
@@ -25,11 +26,21 @@ namespace FarmerApp.Middlewares
 
                 switch (error)
                 {
+                    case NotFoundException e:
+                        {
+                            response.StatusCode = (int)HttpStatusCode.NotFound;
+                            break;
+                        }
                     case BadHttpRequestException e:
                         {
                             response.StatusCode = (int)HttpStatusCode.BadRequest;
                             break;
-                        }                    
+                        }
+                    case BadRequestException e:
+                        {
+                            response.StatusCode = (int)HttpStatusCode.BadRequest;
+                            break;
+                        }
                     case UnauthorizedAccessException e:
                         {
                             response.StatusCode = (int)HttpStatusCode.Unauthorized;

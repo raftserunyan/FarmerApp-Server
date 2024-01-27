@@ -9,17 +9,8 @@ namespace FarmerApp.MapperProfiles
     {
         public SaleProfile()
         {
-            CreateMap<SaleRequestModel, Sale>()
-                .ForMember(sale => sale.Date,
-                            opts => opts.MapFrom(saleRequest => DateTime.Now));
-            // .ForMember(sale => sale.CurrentCustomer,
-            //             opts => opts.MapFrom(saleRequest => CustomerService.GetCustomerById(saleRequest.CustomerId)));
-
-            CreateMap<Sale, SaleResponseModel>()
-                .ForMember(saleResponse => saleResponse.Credit,
-                    opts => opts.MapFrom(sale => sale.Weight * sale.PriceKG - sale.Paid));
-
-            //Map for Update
+            CreateMap<SaleRequestModel, Sale>();
+            CreateMap<Sale, SaleResponseModel>();
             CreateMap<Sale, Sale>();
         }
     }
