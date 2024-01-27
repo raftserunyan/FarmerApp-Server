@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using FarmerApp.DataAccess.DB;
 using FarmerApp.Models;
 using FarmerApp.Repository.IRepository;
@@ -6,14 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FarmerApp.Repository
 {
-    public class ExpenseRepository : IExpenseRepository
+    public class TargetRepository : ITargetRepository
     {
         private FarmerDbContext _dbContext;
         private IMapper _mapper;
         private IUserRepository _userRepository;
         private int _userId; //private User _user;
 
-        public ExpenseRepository(//IUserRepository userRepository,
+        public TargetRepository(//IUserRepository userRepository,
             FarmerDbContext dbContext,
             IMapper mapper
             )
@@ -28,36 +28,35 @@ namespace FarmerApp.Repository
             _userId = userId; //_user = _userRepository.GetById(userId);
         }
 
-        public List<Expense> GetAll() => _dbContext.Expenses.AsNoTracking().Include(x => x.Target).ToList();
+        public List<Target> GetAll() => _dbContext.Targets.AsNoTracking().ToList();
 
-        public int Add(Expense expense)
+        public int Add(Target target)
         {
-            expense.UserId = _userId; //_user.Id;
-            _dbContext.Expenses.Add(expense);
+            target.UserId = _userId; //_user.Id;
+            _dbContext.Targets.Add(target);
             _dbContext.SaveChanges();
 
-            return expense.Id;
+            return target.Id;
         }
 
         public void Remove(int Id)
         {
-            _dbContext.Expenses.Remove(_dbContext.Expenses.SingleOrDefault(x => x.Id == Id));
+            _dbContext.Targets.Remove(_dbContext.Targets.SingleOrDefault(x => x.Id == Id));
             _dbContext.SaveChanges();
         }
 
-        public Expense GetById(int Id) => _dbContext.Expenses.AsNoTracking().Include(x => x.Target).SingleOrDefault(x => x.Id == Id);
+        public Target GetById(int Id) => _dbContext.Targets.AsNoTracking().SingleOrDefault(x => x.Id == Id);
 
-        public Expense Update(Expense expense)
+        public Target Update(Target target)
         {
-            expense.UserId = _userId; //_user.Id;
-            var expenseToUpdate = _dbContext.Expenses.SingleOrDefault(x => x.Id == expense.Id);
+            target.UserId = _userId; //_user.Id;
+            var targetToUpdate = _dbContext.Targets.SingleOrDefault(x => x.Id == target.Id);
 
-            _mapper.Map(expense, expenseToUpdate);
+            _mapper.Map(target, targetToUpdate);
 
             _dbContext.SaveChanges();
 
-            return expense;
+            return target;
         }
     }
 }
-

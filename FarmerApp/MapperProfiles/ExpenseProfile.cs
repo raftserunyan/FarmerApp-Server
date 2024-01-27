@@ -7,13 +7,9 @@ namespace FarmerApp.MapperProfiles
 {
     public class ExpenseProfile : Profile
     {
-        // private readonly ISaleService _saleService;
         public ExpenseProfile()
         {
-            CreateMap<ExpenseRequestModel, Expense>()
-                .ForMember(expense => expense.Date,
-                    opts => opts.MapFrom(expenseRequest => DateTime.Now));
-
+            CreateMap<ExpenseRequestModel, Expense>();
             CreateMap<Expense, ExpenseResponseModel>();
             CreateMap<Expense, Expense>();
         }

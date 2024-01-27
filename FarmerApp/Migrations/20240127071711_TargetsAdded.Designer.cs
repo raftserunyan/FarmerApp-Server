@@ -4,6 +4,7 @@ using FarmerApp.DataAccess.DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FarmerApp.Migrations
 {
     [DbContext(typeof(FarmerDbContext))]
-    partial class FarmerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240127071711_TargetsAdded")]
+    partial class TargetsAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,15 +75,13 @@ namespace FarmerApp.Migrations
                     b.Property<string>("ExpenseName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TargetId")
-                        .HasColumnType("int");
+                    b.Property<string>("ExpensePurpose")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TargetId");
 
                     b.HasIndex("UserId");
 
@@ -298,17 +299,9 @@ namespace FarmerApp.Migrations
 
             modelBuilder.Entity("FarmerApp.Models.Expense", b =>
                 {
-                    b.HasOne("FarmerApp.Models.Target", "Target")
-                        .WithMany("Expenses")
-                        .HasForeignKey("TargetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("FarmerApp.Models.User", "User")
                         .WithMany("Expenses")
                         .HasForeignKey("UserId");
-
-                    b.Navigation("Target");
 
                     b.Navigation("User");
                 });
@@ -413,11 +406,6 @@ namespace FarmerApp.Migrations
             modelBuilder.Entity("FarmerApp.Models.Product", b =>
                 {
                     b.Navigation("Sales");
-                });
-
-            modelBuilder.Entity("FarmerApp.Models.Target", b =>
-                {
-                    b.Navigation("Expenses");
                 });
 
             modelBuilder.Entity("FarmerApp.Models.User", b =>

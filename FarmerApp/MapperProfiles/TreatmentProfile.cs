@@ -9,10 +9,7 @@ namespace FarmerApp.MapperProfiles
     {
         public TreatmentProfile()
         {
-            CreateMap<TreatmentRequestModel, Treatment>()
-                .ForMember(treatment => treatment.Date,
-                    opts => opts.MapFrom(treatmentRequest => DateTime.Now));
-
+            CreateMap<TreatmentRequestModel, Treatment>();
             CreateMap<Treatment, TreatmentResponseModel>();
             CreateMap<Treatment, Treatment>();
         }

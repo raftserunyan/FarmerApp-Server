@@ -57,9 +57,6 @@ namespace FarmerApp.Controllers
             return Ok();
         }
 
-        [HttpGet("GetByPurpose")]
-        public IActionResult GetExpenseByPurpose(string purpose) => Ok(_mapper.Map<ExpenseResponseModel>(_expenseService.GetByPurpose(purpose)));
-
         [HttpPut]
         public IActionResult UpdateExpense(int id, ExpenseRequestModel expenseRequest)
         {

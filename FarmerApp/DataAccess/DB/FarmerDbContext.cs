@@ -13,6 +13,7 @@ namespace FarmerApp.DataAccess.DB
         public DbSet<Investor> Investors { get; set; }
         public DbSet<Investment> Investments { get; set; }
         public DbSet<Treatment> Treatments { get; set; }
+        public DbSet<Target> Targets { get; set; }
 
         public FarmerDbContext(DbContextOptions<FarmerDbContext> options) : base(options)
         {
