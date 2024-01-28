@@ -21,17 +21,18 @@ jobs:
     - name: Check and increment version
       run: |
         CURRENT_VERSION=$(grep -oP 'Version = "\K[^"]+' FarmerApp/Program.cs)
-    
+
         if git rev-list --max-count=1 HEAD -- FarmerApp/Program.cs >/dev/null 2>&1; then
-          git checkout $(git rev-list --max-count=1 HEAD^ -- FarmerApp/Program.cs) FarmerApp/Program.cs
+          git checkout $(git rev-list --max-count=1 HEAD^ -- FarmerApp/Program.cs)
           PREVIOUS_VERSION=$(grep -oP 'Version = "\K[^"]+' FarmerApp/Program.cs)
+          git checkout -
         else
           PREVIOUS_VERSION=""
         fi
-    
+
         if [ "$CURRENT_VERSION" = "$PREVIOUS_VERSION" ]; then
           IFS='.' read -ra VERSION_PARTS <<< "${CURRENT_VERSION//v}"
-    
+
           if [ "${VERSION_PARTS[-1]}" = "9" ]; then
             if [ "${VERSION_PARTS[-2]}" = "9" ]; then
               VERSION_PARTS[-1]=0
@@ -44,7 +45,7 @@ jobs:
           else
             VERSION_PARTS[-1]=$((VERSION_PARTS[-1] + 1))
           fi
-    
+
           IFS='.'; NEW_VERSION="v${VERSION_PARTS[*]}";
           sed -i "s/$CURRENT_VERSION/$NEW_VERSION/g" FarmerApp/Program.cs
         
@@ -56,6 +57,7 @@ jobs:
 
           exit 1
         fi
+
         
   build-and-push:
     needs: increment-version-if-needed

@@ -94,6 +94,7 @@ builder.Services.AddScoped<IInvestmentRepository, InvestmentRepository>();
 builder.Services.AddScoped<ITreatmentRepository, TreatmentRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITargetRepository, TargetRepository>();
+//builder.Services.AddScoped<Test, Test>();
 
 #endregion
 
