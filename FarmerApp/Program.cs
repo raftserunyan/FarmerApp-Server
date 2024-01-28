@@ -25,7 +25,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "FarmerAPI", Version = "v1.1.4" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "FarmerAPI", Version = "v1.1.6" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization",
