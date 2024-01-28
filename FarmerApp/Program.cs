@@ -83,7 +83,6 @@ builder.Services.AddScoped<IInvestmentService, InvestmentService>();
 builder.Services.AddScoped<ITreatmentService, TreatmentService>();
 builder.Services.AddScoped<IFarmerService, FarmerService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
-builder.Services.AddScoped<ITargetRepository, TargetRepository>();
 
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
@@ -93,7 +92,6 @@ builder.Services.AddScoped<IInvestorRepository, InvestorRepository>();
 builder.Services.AddScoped<IInvestmentRepository, InvestmentRepository>();
 builder.Services.AddScoped<ITreatmentRepository, TreatmentRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<ITargetRepository, TargetRepository>();
 
 #endregion
 
