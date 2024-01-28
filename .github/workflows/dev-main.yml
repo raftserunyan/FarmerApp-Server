@@ -58,7 +58,7 @@ jobs:
         fi
         
   build-and-push:
-    #needs: increment-version-if-needed
+    needs: increment-version-if-needed
     runs-on: ubuntu-latest
     outputs:
       current_version: ${{ steps.get_version.outputs.current_version }}
