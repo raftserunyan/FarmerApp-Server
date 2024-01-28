@@ -25,7 +25,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "FarmerAPI", Version = "v1.2.2" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "FarmerAPI", Version = "v1.2.3" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization",
@@ -94,7 +94,6 @@ builder.Services.AddScoped<IInvestmentRepository, InvestmentRepository>();
 builder.Services.AddScoped<ITreatmentRepository, TreatmentRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITargetRepository, TargetRepository>();
-//builder.Services.AddScoped<Test, Test>();
 
 #endregion
 
