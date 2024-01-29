@@ -1,0 +1,19 @@
+﻿using FarmerApp.Core.Models.Sale;
+using FarmerApp.Core.Models.Treatment;
+using FarmerApp.Core.Models.User;
+
+namespace FarmerApp.Core.Models.Product
+{
+    public class ProductModel : BaseModel
+    {
+        public string Name { get; set; }
+        public int PriceKG { get; set; }
+
+        public int? UserId { get; set; }
+        public UserModel User { get; set; }
+
+        public ICollection<SaleModel> Sales { get; set; }
+        public ICollection<TreatmentModel> Treatments { get; set; }
+    }
+}
+

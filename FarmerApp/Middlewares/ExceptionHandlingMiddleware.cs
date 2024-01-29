@@ -1,4 +1,4 @@
-﻿using FarmerApp.Exceptions;
+﻿using FarmerApp.Shared.Exceptions;
 using System.Net;
 
 namespace FarmerApp.Middlewares
