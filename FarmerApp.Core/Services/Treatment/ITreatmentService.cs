@@ -4,7 +4,7 @@ using FarmerApp.Data.Entities;
 
 namespace FarmerApp.Core.Services.Treatment
 {
-    public interface ITreatmentService : ICommonService<TreatmentProfile, TreatmentEntity>
+    public interface ITreatmentService : ICommonService<TreatmentModel, TreatmentEntity>
     {
     }
 }

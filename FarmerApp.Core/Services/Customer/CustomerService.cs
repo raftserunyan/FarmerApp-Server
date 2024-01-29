@@ -6,7 +6,7 @@ using FarmerApp.Data.UnitOfWork;
 
 namespace FarmerApp.Core.Services.Customer
 {
-    internal class CustomerService : CommonService<CustomerProfile, CustomerEntity>, ICustomerService
+    internal class CustomerService : CommonService<CustomerModel, CustomerEntity>, ICustomerService
     {
         public CustomerService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {

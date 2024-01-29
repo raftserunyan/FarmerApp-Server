@@ -4,7 +4,7 @@ using FarmerApp.Data.Entities;
 
 namespace FarmerApp.Core.Services.Target
 {
-    public interface ITargetService : ICommonService<TargetProfile, TargetEntity>
+    public interface ITargetService : ICommonService<TargetModel, TargetEntity>
     {
     }
 }

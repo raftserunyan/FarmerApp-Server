@@ -6,7 +6,7 @@ using FarmerApp.Data.UnitOfWork;
 
 namespace FarmerApp.Core.Services.Target
 {
-    internal class TargetService : CommonService<TargetProfile, TargetEntity>, ITargetService
+    internal class TargetService : CommonService<TargetModel, TargetEntity>, ITargetService
     {
         public TargetService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {

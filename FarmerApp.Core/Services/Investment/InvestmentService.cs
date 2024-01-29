@@ -6,7 +6,7 @@ using FarmerApp.Data.UnitOfWork;
 
 namespace FarmerApp.Core.Services.Investment
 {
-    internal class InvestmentService : CommonService<InvestmentProfile, InvestmentEntity>, IInvestmentService
+    internal class InvestmentService : CommonService<InvestmentModel, InvestmentEntity>, IInvestmentService
     {
         public InvestmentService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {

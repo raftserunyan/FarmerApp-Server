@@ -6,7 +6,7 @@ using FarmerApp.Data.UnitOfWork;
 
 namespace FarmerApp.Core.Services.Product
 {
-    internal class ProductService : CommonService<ProductProfile, ProductEntity>, IProductService
+    internal class ProductService : CommonService<ProductModel, ProductEntity>, IProductService
     {
         public ProductService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {

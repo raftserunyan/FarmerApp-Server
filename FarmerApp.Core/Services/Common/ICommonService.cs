@@ -13,7 +13,7 @@ namespace FarmerApp.Core.Services.Common
         Task<List<TModel>> GetAll(ICommonSpecification<TEntity> specification, bool includeDeleted = false);
         Task<TModel> GetSingleBySpecification(ICommonSpecification<TEntity> specification, bool includeDeleted = false);
         Task<int> Add(TModel model);
-        Task Update(TModel model);
+        Task<TModel> Update(TModel model);
         Task Delete(TModel model);
         Task Delete(int id);
     }

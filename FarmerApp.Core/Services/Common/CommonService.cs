@@ -83,7 +83,7 @@ namespace FarmerApp.Core.Services.Common
             return _mapper.Map<TModel>(entity);
         }
 
-        public async Task Update(TModel model)
+        public async Task<TModel> Update(TModel model)
         {
             if (model is null)
                 throw BadRequest($"Model to be updated was null");
@@ -98,6 +98,8 @@ namespace FarmerApp.Core.Services.Common
 
             _mapper.Map(entity, existingEntity);
             await _uow.SaveChangesAsync();
+
+            return _mapper.Map<TModel>(existingEntity);
         }
         #endregion
 

@@ -15,7 +15,7 @@ namespace FarmerApp.Core.Extensions
 {
     public static class ServiceRegisterer
     {
-        public static IServiceCollection RegisterServices(this IServiceCollection services)
+        public static IServiceCollection AddCustomServices(this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();

@@ -4,7 +4,7 @@ using FarmerApp.Data.Entities;
 
 namespace FarmerApp.Core.Services.Investment
 {
-    public interface IInvestmentService : ICommonService<InvestmentProfile, InvestmentEntity>
+    public interface IInvestmentService : ICommonService<InvestmentModel, InvestmentEntity>
     {
     }
 }
