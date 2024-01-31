@@ -21,7 +21,7 @@ namespace FarmerApp.Core.Services.Common
         }
 
         #region Public Methods
-        public async Task<int> Add(TModel model)
+        public virtual async Task<int> Add(TModel model)
         {
             if (model is null)
                 throw BadRequest($"Model to be added was null");
@@ -34,7 +34,7 @@ namespace FarmerApp.Core.Services.Common
             return entity.Id;
         }
 
-        public async Task Delete(TModel model)
+        public virtual async Task Delete(TModel model)
         {
             if (model is null)
                 throw BadRequest("Model to delete cannot be null");
@@ -45,7 +45,7 @@ namespace FarmerApp.Core.Services.Common
             await _uow.SaveChangesAsync();
         }
 
-        public async Task Delete(int id)
+        public virtual async Task Delete(int id)
         {
             var entity = await _uow.Repository<TEntity>().GetById(id, true);
             EnsureExists(entity, $"There's no entity with id {id} to delete. Entity type: {typeof(TEntity).Name}");
@@ -54,21 +54,21 @@ namespace FarmerApp.Core.Services.Common
             await _uow.SaveChangesAsync();
         }
 
-        public async Task<List<TModel>> GetAll(bool includeDeleted = false)
+        public virtual async Task<List<TModel>> GetAll(bool includeDeleted = false)
         {
             var entities = await _uow.Repository<TEntity>().GetAll(includeDeleted);
 
             return _mapper.Map<List<TModel>>(entities);
         }
 
-        public async Task<List<TModel>> GetAll(ICommonSpecification<TEntity> specification, bool includeDeleted = false)
+        public virtual async Task<List<TModel>> GetAll(ICommonSpecification<TEntity> specification, bool includeDeleted = false)
         {
             var entities = await _uow.Repository<TEntity>().GetAllBySpecification(specification, includeDeleted);
 
             return _mapper.Map<List<TModel>>(entities);
         }
 
-        public async Task<TModel> GetById(int id, bool includeDeleted = false)
+        public virtual async Task<TModel> GetById(int id, bool includeDeleted = false)
         {
             var entity = await _uow.Repository<TEntity>().GetById(id, includeDeleted);
             EnsureExists(entity, $"Entity with id {id} was not found");
@@ -76,14 +76,14 @@ namespace FarmerApp.Core.Services.Common
             return _mapper.Map<TModel>(entity);
         }
 
-        public async Task<TModel> GetSingleBySpecification(ICommonSpecification<TEntity> specification, bool includeDeleted = false)
+        public virtual async Task<TModel> GetSingleBySpecification(ICommonSpecification<TEntity> specification, bool includeDeleted = false)
         {
             var entity = await _uow.Repository<TEntity>().GetSingleBySpecification(specification, includeDeleted);
 
             return _mapper.Map<TModel>(entity);
         }
 
-        public async Task<TModel> Update(TModel model)
+        public virtual async Task<TModel> Update(TModel model)
         {
             if (model is null)
                 throw BadRequest($"Model to be updated was null");

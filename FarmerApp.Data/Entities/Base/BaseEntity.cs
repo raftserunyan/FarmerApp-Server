@@ -2,7 +2,7 @@
 
 namespace FarmerApp.Data.Entities.Base
 {
-    public abstract class BaseEntity
+    public abstract class BaseEntity : DbEntity
     {
         [Key]
         public int Id { get; set; }
