@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FarmerApp.Data.Migrations
 {
     [DbContext(typeof(FarmerDbContext))]
-    [Migration("20240129131417_Initial")]
+    [Migration("20240202090818_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

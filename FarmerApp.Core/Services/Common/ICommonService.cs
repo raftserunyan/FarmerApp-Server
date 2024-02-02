@@ -1,4 +1,6 @@
 ﻿using FarmerApp.Core.Models;
+using FarmerApp.Core.Query;
+using FarmerApp.Core.Wrappers;
 using FarmerApp.Data.Entities.Base;
 using FarmerApp.Data.Specifications.Common;
 
@@ -9,9 +11,9 @@ namespace FarmerApp.Core.Services.Common
         where TModel : BaseModel
     {
         Task<TModel> GetById(int id, bool includeDeleted = false);
-        Task<List<TModel>> GetAll(bool includeDeleted = false);
-        Task<List<TModel>> GetAll(ICommonSpecification<TEntity> specification, bool includeDeleted = false);
-        Task<TModel> GetSingleBySpecification(ICommonSpecification<TEntity> specification, bool includeDeleted = false);
+        Task<TModel> GetSingleBySpecification(ISpecification<TEntity> specification, bool includeDeleted = false);
+        Task<PagedResult<TModel>> GetAll(BaseQueryModel query = null, bool includeDeleted = false);
+        Task<PagedResult<TModel>> GetAll(ISpecification<TEntity> specification, BaseQueryModel query = null, bool includeDeleted = false);
         Task<int> Add(TModel model);
         Task<TModel> Update(TModel model);
         Task Delete(TModel model);

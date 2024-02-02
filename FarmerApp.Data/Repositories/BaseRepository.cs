@@ -7,24 +7,70 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FarmerApp.Data.Repositories
 {
-    internal class CommonRepository<TEntity> : ICommonRepository<TEntity> where TEntity : BaseEntity
+    internal class BaseRepository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
     {
         private readonly FarmerDbContext _context;
 
-        public CommonRepository(FarmerDbContext context)
+        public BaseRepository(FarmerDbContext context)
         {
             _context = context;
         }
 
+        #region Public methods
+
+        public async Task<IEnumerable<TEntity>> GetAll(bool includeDeleted = false)
+        {
+            var entities = _context.Set<TEntity>().AsQueryable();
+
+            if (includeDeleted)
+            {
+                entities = entities.IgnoreQueryFilters();
+            }
+
+            return await entities.ToListAsync();
+        }
+
+        public async Task<IEnumerable<TEntity>> GetAllBySpecification(ISpecification<TEntity> specification, bool includeDeleted = false)
+        {
+            var result = await ApplySpecification(specification, includeDeleted).ToListAsync();
+            return result;
+        }
+
+        public async Task<TEntity> GetById(int id, bool includeDeleted = false)
+        {
+            var entities = _context.Set<TEntity>().AsQueryable();
+
+            if (includeDeleted)
+            {
+                entities = entities.IgnoreQueryFilters();
+            }
+
+            return await entities.SingleOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<TEntity> GetSingleBySpecification(ISpecification<TEntity> specification, bool includeDeleted = false)
+        {
+            var result = ApplySpecification(specification, includeDeleted);
+            return await result.FirstOrDefaultAsync();
+        }
+
+        
         public async Task Add(TEntity entity)
         {
             await _context.AddAsync(entity);
         }
 
-        public async Task AddRange(List<TEntity> entities)
+        public async Task AddRange(IEnumerable<TEntity> entities)
         {
             await _context.AddRangeAsync(entities);
         }
+
+        public void Update(TEntity entity)
+        {
+            TryAttachEntity(entity);
+            _context.Entry(entity).State = EntityState.Modified;
+        }
+        
 
         public async Task Delete(int id, DeleteOptions deleteOption = DeleteOptions.Soft)
         {
@@ -77,41 +123,18 @@ namespace FarmerApp.Data.Repositories
             _context.Set<TEntity>().RemoveRange(entities);
         }
 
-        public async Task<List<TEntity>> GetAll(bool includeDeleted = false)
+
+        public async Task<int> Count(ISpecification<TEntity> specification = null, bool includeDeleted = false)
         {
-            var entities = _context.Set<TEntity>().AsQueryable();
+            var query = ApplySpecification(specification, includeDeleted).AsNoTracking();
+            var count = await query.CountAsync();
 
-            if (includeDeleted)
-            {
-                entities = entities.IgnoreQueryFilters();
-            }
-
-            return await entities.ToListAsync();
+            return count;
         }
 
-        public async Task<List<TEntity>> GetAllBySpecification(ICommonSpecification<TEntity> commonSpecification, bool includeDeleted = false)
-        {
-            var result = await ApplySpecification(commonSpecification, includeDeleted).ToListAsync();
-            return result;
-        }
+        #endregion
 
-        public async Task<TEntity> GetSingleBySpecification(ICommonSpecification<TEntity> commonSpecification, bool includeDeleted = false)
-        {
-            var result = ApplySpecification(commonSpecification, includeDeleted);
-            return await result.FirstOrDefaultAsync();
-        }
-
-        public async Task<TEntity> GetById(int id, bool includeDeleted = false)
-        {
-            var entities = _context.Set<TEntity>().AsQueryable();
-
-            if (includeDeleted)
-            {
-                entities = entities.IgnoreQueryFilters();
-            }
-
-            return await entities.SingleOrDefaultAsync(x => x.Id == id);
-        }
+        #region Private methods
 
         private void SoftDelete(TEntity entity)
         {
@@ -128,7 +151,7 @@ namespace FarmerApp.Data.Repositories
             _context.RemoveRange(entities);
         }
 
-        private IQueryable<TEntity> ApplySpecification(ICommonSpecification<TEntity> specification, bool includeDeleted)
+        private IQueryable<TEntity> ApplySpecification(ISpecification<TEntity> specification, bool includeDeleted)
         {
             var query = _context.Set<TEntity>().AsQueryable();
 
@@ -141,5 +164,20 @@ namespace FarmerApp.Data.Repositories
 
             return query;
         }
+
+        private void TryAttachEntity(TEntity entity)
+        {
+            try
+            {
+                _context.Set<TEntity>().Attach(entity);
+            }
+            catch (Exception)
+            {
+                // Even with .AsNoTracking, entities are attached to the context
+                // If entity could not be attached to context, ignore the exception and continue with following steps
+            }
+        }
+
+        #endregion
     }
 }

@@ -1,6 +1,9 @@
 using AutoMapper;
 using FarmerApp.Core.Models.Customer;
+using FarmerApp.Core.Query;
 using FarmerApp.Core.Services.Customer;
+using FarmerApp.Core.Wrappers;
+using FarmerApp.Data.Specifications.Customer;
 using FarmerApp.Models.ViewModels.RequestModels;
 using FarmerApp.Models.ViewModels.ResponseModels;
 using Microsoft.AspNetCore.Authorization;
@@ -13,6 +16,7 @@ namespace FarmerApp.Controllers
     //[Authorize]
     public class CustomersController : ControllerBase
     {
+        private int _userId;
         private ICustomerService _customerService;
         private IMapper _mapper;
 
@@ -23,23 +27,15 @@ namespace FarmerApp.Controllers
         {
             _mapper = mapper;
             _customerService = customerService;
-            //_customerService.SetUser(int.Parse(httpContext.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "NameIdentifier").Value));
+            _userId = 1;//int.Parse(httpContext.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "NameIdentifier").Value);
         }
 
-        //[HttpGet("GetByLocation")]
-        //public async Task<IActionResult> GetCustomersByLocation(string address) => Ok(_customerService.GetCustomersByLocation(address));
-
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [HttpPost("get")]
+        public async Task<IActionResult> GetAll([FromBody] BaseQueryModel query)
         {
-            var customers = await _customerService.GetAll();
+            var customers = await _customerService.GetAll(new CustomersByUserIdSpecification(_userId), query);
 
-            var response = new List<CustomerResponseModel>();
-
-            foreach (var customer in customers)
-                response.Add(_mapper.Map<CustomerResponseModel>(customer));
-
-            return Ok(response);
+            return Ok(_mapper.Map<PagedResult<CustomerResponseModel>>(customers));
         }
 
         [HttpGet("GetById")]

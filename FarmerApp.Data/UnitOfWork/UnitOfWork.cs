@@ -17,7 +17,7 @@ namespace FarmerApp.Data.UnitOfWork
             _context = context;
         }
 
-        public ICommonRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity
+        public IRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity
         {
             if (_repositories == null)
                 _repositories = new Hashtable();
@@ -26,7 +26,7 @@ namespace FarmerApp.Data.UnitOfWork
 
             if (!_repositories.ContainsKey(type))
             {
-                var repositoryType = typeof(CommonRepository<>);
+                var repositoryType = typeof(BaseRepository<>);
 
                 var repositoryInstance =
                     Activator.CreateInstance(repositoryType
@@ -35,7 +35,7 @@ namespace FarmerApp.Data.UnitOfWork
                 _repositories.Add(type, repositoryInstance);
             }
 
-            return (ICommonRepository<TEntity>)_repositories[type];
+            return (IRepository<TEntity>)_repositories[type];
         }
 
         public void Dispose()

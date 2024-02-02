@@ -5,19 +5,15 @@ namespace FarmerApp.Core.Query.DynamicSortingBuilder;
 
 public static class DynamicSortingBuilder
 {
-    public static Func<IQueryable<TSource>, IOrderedQueryable<TSource>> BuildOrderingFunc<TSource>(
+    public static List<Expression<Func<TSource, object>>> BuildOrderingFunc<TSource>(
         IEnumerable<OrderingItem> orderings)
     {
-        Expression result = Expression.Empty();
+        List<Expression<Func<TSource, object>>> result = new();
 
-        var sourceParameterExpression =
-            Expression.Parameter(typeof(IQueryable<>).MakeGenericType(typeof(TSource)), "source");
         var localParameterExpression = Expression.Parameter(typeof(TSource), "x");
 
         var type = typeof(TSource);
         var typeProperties = type.GetProperties();
-
-        var currentIndex = 1;
 
         foreach (var ordering in orderings)
         {
@@ -36,32 +32,12 @@ public static class DynamicSortingBuilder
                 memberExpression = Expression.PropertyOrField(memberBefore, propertyName);
             }
 
-            var lambdaExpression = Expression.Lambda(memberExpression, localParameterExpression);
-            Expression left;
-            string methodName;
-            if (currentIndex == 1)
-            {
-                methodName = ordering.IsAscending ? "OrderBy" : "OrderByDescending";
-                left = sourceParameterExpression;
-            }
-            else
-            {
-                methodName = ordering.IsAscending ? "ThenBy" : "ThenByDescending";
-                left = result;
-            }
-
-            result = Expression.Call(typeof(Queryable),
-                methodName,
-                new[] { type, propertyInfo.PropertyType },
-                left, lambdaExpression
-            );
-
-            currentIndex++;
+            result.Add(Expression.Lambda<Func<TSource, object>>(
+                Expression.Convert(memberExpression, typeof(object)),
+                localParameterExpression
+            ));
         }
 
-        var lambda =
-            Expression.Lambda<Func<IQueryable<TSource>, IOrderedQueryable<TSource>>>(result,
-                sourceParameterExpression);
-        return lambda.Compile();
+        return result;
     }
 }

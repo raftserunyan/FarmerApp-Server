@@ -1,6 +1,6 @@
 namespace FarmerApp.Core.Query;
 
-public interface IOrdering
+public interface IOrderable
 {
     List<OrderingItem> Orderings { get; set; }
 }

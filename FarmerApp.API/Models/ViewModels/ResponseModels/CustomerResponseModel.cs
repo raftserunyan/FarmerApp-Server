@@ -1,3 +1,5 @@
+using FarmerApp.Data.Entities;
+
 namespace FarmerApp.Models.ViewModels.ResponseModels
 {
     public class CustomerResponseModel
@@ -8,6 +10,7 @@ namespace FarmerApp.Models.ViewModels.ResponseModels
         public string PhoneNumber { get; set; }
 		public string AccountNumber { get; set; }
 		public string HVHH { get; set; }
+
         public IEnumerable<SaleResponseModel> Sales { get; set; }
     }
 }

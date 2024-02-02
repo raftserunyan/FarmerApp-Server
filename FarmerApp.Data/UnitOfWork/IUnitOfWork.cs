@@ -5,7 +5,7 @@ namespace FarmerApp.Data.UnitOfWork
 {
     public interface IUnitOfWork : IDisposable
     {
-        ICommonRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity;
+        IRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity;
 
         Task SaveChangesAsync();
     }
