@@ -78,7 +78,9 @@ jobs:
         --build-arg JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" 
         --build-arg JWT_REFRESH_SECRET_KEY="${{ secrets.JWT_REFRESH_SECRET_KEY }}" 
         --build-arg ACCESS_TOKEN_EXPIRY_MINUTES="${{ secrets.ACCESS_TOKEN_EXPIRY_MINUTES }}" 
-        --build-arg REFRESH_TOKEN_EXPIRY_MINUTES="${{ secrets.REFRESH_TOKEN_EXPIRY_MINUTES }}" 
+        --build-arg REFRESH_TOKEN_EXPIRY_MINUTES="${{ secrets.REFRESH_TOKEN_EXPIRY_MINUTES }}"
+        --build-arg SEED_USERNAME="${{ secrets.SEED_USERNAME }}"
+        --build-arg SEED_PASS="${{ secrets.SEED_PASS }}"
         -t ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:dev
       
     - name: Login to Docker Hub
