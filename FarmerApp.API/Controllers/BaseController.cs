@@ -4,33 +4,38 @@ using FarmerApp.Core.Query;
 using FarmerApp.Core.Services.Common;
 using FarmerApp.Core.Wrappers;
 using FarmerApp.Data.Entities.Base;
+using FarmerApp.Data.Specifications.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FarmerApp.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     public abstract class BaseController<TEntity, TModel, TGet, TCreate, TUpdate> : ControllerBase 
-        where TModel : BaseModel 
+        where TModel : BaseModel
         where TEntity : BaseEntity
     {
         protected readonly int _depth;
+        protected readonly int _userId;
         protected readonly IMapper _mapper;
         protected readonly ICommonService<TModel, TEntity> _service;
+
+        public abstract ISpecification<TEntity> GetSpecification { get; }
 
         protected BaseController(ICommonService<TModel, TEntity> service, IMapper mapper, int depth = 1)
         {
             _service = service;
             _depth = depth;
-            _mapper = mapper;
+            _mapper = mapper;            
+            //_userId = int.Parse(HttpContext.User.Claims.FirstOrDefault(x => x.Type == "NameIdentifier").Value);
         }
 
-        [HttpPost]
+        [HttpPost("Get")]
         public virtual async Task<ActionResult<PagedResult<TGet>>> Read([FromBody] BaseQueryModel query)
         {
-            var data = await _service.GetAll();
+            var data = await _service.GetAll(GetSpecification);
 
             return Ok(_mapper.Map<PagedResult<TGet>>(data));
         }

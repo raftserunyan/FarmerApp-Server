@@ -30,7 +30,7 @@ namespace FarmerApp.Data.Repositories
             return await entities.ToListAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllBySpecification(ISpecification<TEntity> specification, bool includeDeleted = false)
+        public async Task<List<TEntity>> GetAllBySpecification(ISpecification<TEntity> specification, bool includeDeleted = false)
         {
             var result = await ApplySpecification(specification, includeDeleted).ToListAsync();
             return result;

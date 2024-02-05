@@ -25,8 +25,7 @@ namespace FarmerApp.Core.Services.Common
             _mapper = mapper;
         }
 
-        #region Public Methods
-
+        #region Public Methods        
         public virtual async Task<PagedResult<TModel>> GetAll(BaseQueryModel query = null, bool includeDeleted = false)
         {
             return await GetAll(null, query, includeDeleted);
@@ -36,21 +35,26 @@ namespace FarmerApp.Core.Services.Common
             if (specification is null)
                 specification = new EmptySpecification<TEntity>();
 
-            FilterResults(specification, query);
+            int? total = null;
+            
+            if (query is not null)
+            {
+                FilterResults(specification, query);
 
-            var total = await _uow.Repository<TEntity>().Count(specification, includeDeleted);
+                total = await _uow.Repository<TEntity>().Count(specification, includeDeleted);
 
-            OrderResults(specification, query.Orderings);
-            ApplyPaging(specification, query);
+                OrderResults(specification, query.Orderings);
+                ApplyPaging(specification, query);
+            }
 
             var entities = await _uow.Repository<TEntity>().GetAllBySpecification(specification, includeDeleted);
 
             return new PagedResult<TModel>
             {
                 Results = _mapper.Map<List<TModel>>(entities),
-                Total = total,
-                PageNumber = query.PageNumber,
-                PageSize = query.PageSize
+                Total = total ?? entities.Count,
+                PageNumber = query?.PageNumber ?? 1,
+                PageSize = query?.PageSize ?? (total ?? entities.Count)
             };
         }
 
@@ -66,7 +70,7 @@ namespace FarmerApp.Core.Services.Common
 
             return _mapper.Map<TModel>(entity);
         }
-        
+
         public virtual async Task Delete(TModel model)
         {
             var entity = ValidateAndMap(model, "Model to delete cannot be null");

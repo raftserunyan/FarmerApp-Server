@@ -9,7 +9,7 @@ namespace FarmerApp.Data.Repositories
     {
         Task<IEnumerable<TEntity>> GetAll(bool includeDeleted = false);
 
-        Task<IEnumerable<TEntity>> GetAllBySpecification(ISpecification<TEntity> specification, bool includeDeleted = false);
+        Task<List<TEntity>> GetAllBySpecification(ISpecification<TEntity> specification, bool includeDeleted = false);
 
         Task<TEntity> GetById(int id, bool includeDeleted = false);
 
