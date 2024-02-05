@@ -1,4 +1,4 @@
-﻿using FarmerApp;
+﻿using FarmerApp.API.Utils;
 using FarmerApp.Core.Extensions;
 using FarmerApp.Data.DAO;
 using FarmerApp.Middlewares;
@@ -73,7 +73,6 @@ builder.Services.AddDbContext<FarmerDbContext>(opts =>
     opts.UseSqlServer(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING", EnvironmentVariableTarget.Process)
                         ?? builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped);
 
-builder.Services.AddSingleton<ApplicationSettings>();
 builder.Services.AddCustomServices();
 
 builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
@@ -85,10 +84,7 @@ builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    await scope.ServiceProvider.GetRequiredService<FarmerDbContext>().Database.MigrateAsync();
-}
+await DbMigrator.MigrateDbAndPopulate(app, builder);
 
 #endregion
 

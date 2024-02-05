@@ -3,6 +3,7 @@ using FarmerApp.Data.DAO;
 using FarmerApp.Data.Entities.Base;
 using FarmerApp.Data.Repositories;
 using FarmerApp.Shared.Exceptions;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace FarmerApp.Data.UnitOfWork
@@ -45,20 +46,23 @@ namespace FarmerApp.Data.UnitOfWork
 
         public async Task SaveChangesAsync()
         {
-            await _context.SaveChangesAsync();
-
-            //try
-            //{
-            //    await _context.SaveChangesAsync();
-            //}
-            //catch (DbUpdateConcurrencyException ex)
-            //{
-            //    throw new EntityUpdateConcurrencyException(ex.Entries);
-            //}
-            //catch (DbUpdateException ex) when (ex.ForeignKeyConstraintConflictOnInsert())
-            //{
-            //    throw new BadDataException("Related entity not found.");
-            //}
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw;// new EntityUpdateConcurrencyException(ex.Entries);
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    var exception = ex.InnerException as SqlException;
+                    if (exception != null && exception.Number == 547)
+                        throw new BadRequestException("Related entity not found.");
+                }
+            }
         }
     }
 }

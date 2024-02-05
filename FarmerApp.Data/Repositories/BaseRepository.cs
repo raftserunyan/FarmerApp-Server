@@ -48,9 +48,10 @@ namespace FarmerApp.Data.Repositories
             return await entities.SingleOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<TEntity> GetSingleBySpecification(ISpecification<TEntity> specification, bool includeDeleted = false)
+        public async Task<TEntity> GetFirstBySpecification(ISpecification<TEntity> specification, bool includeDeleted = false)
         {
             var result = ApplySpecification(specification, includeDeleted);
+
             return await result.FirstOrDefaultAsync();
         }
 

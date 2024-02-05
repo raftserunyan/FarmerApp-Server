@@ -1,8 +1,9 @@
 ﻿using FarmerApp.Data.Entities.Base;
+using FarmerApp.Data.Entities.Interfaces;
 
 namespace FarmerApp.Data.Entities
 {
-	public class SaleEntity : BaseEntity
+	public class SaleEntity : BaseEntity, IHasUser
     {
 		public double Weight { get; set; }
 		public int PriceKG { get; set; }

@@ -4,7 +4,7 @@ using FarmerApp.Data.Entities;
 
 namespace FarmerApp.Core.Services.Balance
 {
-    public interface IBalanceService : ICommonService<BalanceModel, BalanceEntity>
-    {
-    }
+    //public interface IBalanceService : ICommonService<BalanceModel, BalanceEntity>
+    //{
+    //}
 }

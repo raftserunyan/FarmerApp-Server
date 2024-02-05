@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FarmerApp.Data.Migrations
 {
+    /// <inheritdoc />
     public partial class Initial : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -155,6 +157,7 @@ namespace FarmerApp.Data.Migrations
                     Amount = table.Column<double>(type: "float", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     InvestorId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
@@ -168,6 +171,11 @@ namespace FarmerApp.Data.Migrations
                         principalTable: "Investors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Investments_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -285,6 +293,11 @@ namespace FarmerApp.Data.Migrations
                 column: "InvestorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Investments_UserId",
+                table: "Investments",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Investors_UserId",
                 table: "Investors",
                 column: "UserId");
@@ -325,6 +338,7 @@ namespace FarmerApp.Data.Migrations
                 column: "UserId");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

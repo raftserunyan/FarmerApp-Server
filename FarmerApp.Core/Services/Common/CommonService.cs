@@ -64,9 +64,9 @@ namespace FarmerApp.Core.Services.Common
 
             return _mapper.Map<TModel>(entity);
         }
-        public virtual async Task<TModel> GetSingleBySpecification(ISpecification<TEntity> specification, bool includeDeleted = false)
+        public virtual async Task<TModel> GetFirstBySpecification(ISpecification<TEntity> specification, bool includeDeleted = false)
         {
-            var entity = await _uow.Repository<TEntity>().GetSingleBySpecification(specification, includeDeleted);
+            var entity = await _uow.Repository<TEntity>().GetFirstBySpecification(specification, includeDeleted);
 
             return _mapper.Map<TModel>(entity);
         }
@@ -74,24 +74,29 @@ namespace FarmerApp.Core.Services.Common
         public virtual async Task Delete(TModel model)
         {
             var entity = ValidateAndMap(model, "Model to delete cannot be null");
+
             _uow.Repository<TEntity>().Delete(entity);
-            await _uow.SaveChangesAsync();
-        }
-        public virtual async Task Delete(int id)
-        {
-            var entity = await GetEntityById(id);
-            _uow.Repository<TEntity>().Delete(entity);
+
             await _uow.SaveChangesAsync();
         }
 
-        public virtual async Task<int> Add(TModel model)
+        public virtual async Task Delete(int id)
+        {
+            var entity = await GetEntityById(id);
+
+            _uow.Repository<TEntity>().Delete(entity);
+
+            await _uow.SaveChangesAsync();
+        }
+
+        public virtual async Task<TModel> Add(TModel model)
         {
             var entity = ValidateAndMap(model, "Model to be added was null");
 
             await _uow.Repository<TEntity>().Add(entity);
             await _uow.SaveChangesAsync();
 
-            return entity.Id;
+            return _mapper.Map<TModel>(entity);
         }
 
         public virtual async Task<TModel> Update(TModel model)

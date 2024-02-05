@@ -1,10 +1,11 @@
-﻿using FarmerApp.Core.Models.Sale;
+﻿using FarmerApp.Core.Models.Interfaces;
+using FarmerApp.Core.Models.Sale;
 using FarmerApp.Core.Models.Treatment;
 using FarmerApp.Core.Models.User;
 
 namespace FarmerApp.Core.Models.Product
 {
-    public class ProductModel : BaseModel
+    public class ProductModel : BaseModel, IHasUserModel
     {
         public string Name { get; set; }
         public int PriceKG { get; set; }

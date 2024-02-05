@@ -1,4 +1,4 @@
-﻿namespace FarmerApp.Models.ViewModels.RequestModels
+﻿namespace FarmerApp.Core.Models.Identity
 {
     public class ChangePasswordRequest
     {

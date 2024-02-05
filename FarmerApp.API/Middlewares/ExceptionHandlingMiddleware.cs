@@ -46,6 +46,11 @@ namespace FarmerApp.Middlewares
                             response.StatusCode = (int)HttpStatusCode.Unauthorized;
                             break;
                         }
+                    case AccessDeniedException e:
+                        {
+                            response.StatusCode = (int)HttpStatusCode.Forbidden;
+                            break;
+                        }
                     default:
                         // unhandled error
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;

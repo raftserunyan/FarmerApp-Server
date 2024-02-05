@@ -8,8 +8,8 @@ namespace FarmerApp.Core.MapperProfiles.Balance
     {
         public BalanceProfile()
         {
-            CreateMap<BalanceModel, BalanceEntity>().ReverseMap();
-            CreateMap<BalanceEntity, BalanceEntity>();
+            //CreateMap<BalanceModel, BalanceEntity>().ReverseMap();
+            //CreateMap<BalanceEntity, BalanceEntity>();
         }
     }
 }

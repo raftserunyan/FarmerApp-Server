@@ -1,7 +1,6 @@
 ﻿using FarmerApp.Data.Entities.Base;
 using FarmerApp.Data.Specifications.Common;
 using FarmerApp.Shared.Enums;
-using System.Linq.Expressions;
 
 namespace FarmerApp.Data.Repositories
 {
@@ -13,7 +12,7 @@ namespace FarmerApp.Data.Repositories
 
         Task<TEntity> GetById(int id, bool includeDeleted = false);
 
-        Task<TEntity> GetSingleBySpecification(ISpecification<TEntity> specification, bool includeDeleted = false);
+        Task<TEntity> GetFirstBySpecification(ISpecification<TEntity> specification, bool includeDeleted = false);
 
 
         Task Add(TEntity entity);

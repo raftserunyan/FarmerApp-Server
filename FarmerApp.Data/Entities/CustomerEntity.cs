@@ -1,9 +1,10 @@
 ﻿using FarmerApp.Data.Entities.Base;
+using FarmerApp.Data.Entities.Interfaces;
 
 namespace FarmerApp.Data.Entities
 {
-	public class CustomerEntity : BaseEntity
-	{
+	public class CustomerEntity : BaseEntity, IHasUser
+    {
 		public string Name { get; set; }
         public string Address { get; set; }
         public string PhoneNumber { get; set; }

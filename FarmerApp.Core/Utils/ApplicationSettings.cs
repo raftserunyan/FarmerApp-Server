@@ -1,4 +1,6 @@
-﻿namespace FarmerApp
+﻿using Microsoft.Extensions.Configuration;
+
+namespace FarmerApp.Core.Utils
 {
     public class ApplicationSettings
     {

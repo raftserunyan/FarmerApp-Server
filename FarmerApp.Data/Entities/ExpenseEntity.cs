@@ -1,8 +1,9 @@
 ﻿using FarmerApp.Data.Entities.Base;
+using FarmerApp.Data.Entities.Interfaces;
 
 namespace FarmerApp.Data.Entities
 {
-	public class ExpenseEntity : BaseEntity
+	public class ExpenseEntity : BaseEntity, IHasUser
     {
 		public string ExpenseName { get; set; }
 		public int ExpenseAmount { get; set; }

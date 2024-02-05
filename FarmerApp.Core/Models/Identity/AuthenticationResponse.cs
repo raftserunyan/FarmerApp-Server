@@ -1,6 +1,6 @@
 ﻿namespace FarmerApp.Core.Models.Identity
 {
-    public class IdentityModel
+    public class AuthenticationResponse
     {
         public string Name { get; set; }
         public string Username { get; set; }

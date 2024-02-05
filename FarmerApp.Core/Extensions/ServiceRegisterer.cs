@@ -8,6 +8,7 @@ using FarmerApp.Core.Services.Sale;
 using FarmerApp.Core.Services.Target;
 using FarmerApp.Core.Services.Treatment;
 using FarmerApp.Core.Services.User;
+using FarmerApp.Core.Utils;
 using FarmerApp.Data.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,9 +18,10 @@ namespace FarmerApp.Core.Extensions
     {
         public static IServiceCollection AddCustomServices(this IServiceCollection services)
         {
+            services.AddSingleton<ApplicationSettings>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IBalanceService, BalanceService>();
+            //services.AddScoped<IBalanceService, BalanceService>();
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IExpenseService, ExpenseService>();
             services.AddScoped<IIdentityService, IdentityService>();

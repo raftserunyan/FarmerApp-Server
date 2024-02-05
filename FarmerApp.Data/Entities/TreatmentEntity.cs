@@ -1,9 +1,10 @@
 using FarmerApp.Data.Entities.Base;
+using FarmerApp.Data.Entities.Interfaces;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FarmerApp.Data.Entities
 {
-    public class TreatmentEntity : BaseEntity
+    public class TreatmentEntity : BaseEntity, IHasUser
     {
 		public string DrugName { get; set; }
 		public string DrugWeight { get; set; }

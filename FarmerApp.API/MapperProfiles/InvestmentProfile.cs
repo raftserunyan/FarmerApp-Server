@@ -10,7 +10,6 @@ namespace FarmerApp.MapperProfiles
         public InvestmentProfile()
         {
             CreateMap<InvestmentRequestModel, InvestmentModel>();
-            CreateMap<InvestmentUpdateRequestModel, InvestmentModel>();
             CreateMap<InvestmentModel, InvestmentResponseModel>();
         }
     }

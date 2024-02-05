@@ -1,10 +1,11 @@
 ﻿using FarmerApp.Core.Models.Customer;
+using FarmerApp.Core.Models.Interfaces;
 using FarmerApp.Core.Models.Product;
 using FarmerApp.Core.Models.User;
 
 namespace FarmerApp.Core.Models.Sale
 {
-    public class SaleModel : BaseModel
+    public class SaleModel : BaseModel, IHasUserModel
     {
         public double Weight { get; set; }
         public int PriceKG { get; set; }
