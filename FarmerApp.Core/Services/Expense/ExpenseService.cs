@@ -1,5 +1,4 @@
 using AutoMapper;
-using FarmerApp.Core.Models.Balance;
 using FarmerApp.Core.Models.Expense;
 using FarmerApp.Core.Services.Common;
 using FarmerApp.Data.Entities;

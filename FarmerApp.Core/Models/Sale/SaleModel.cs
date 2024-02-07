@@ -12,6 +12,9 @@ namespace FarmerApp.Core.Models.Sale
         public int Paid { get; set; }
         public DateTime? Date { get; set; }
 
+        public double Cost { get => Weight * PriceKG; }
+        public double Credit { get => Cost - Paid; }
+
         public int ProductId { get; set; }
         public ProductModel Product { get; set; }
 

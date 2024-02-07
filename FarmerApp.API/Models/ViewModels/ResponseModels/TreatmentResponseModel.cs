@@ -1,6 +1,8 @@
+using FarmerApp.API.Models.ViewModels.ResponseModels.Product;
+
 namespace FarmerApp.Models.ViewModels.ResponseModels
 {
-	public class TreatmentResponseModel
+    public class TreatmentResponseModel
 	{
 		public int Id { get; set; }
 		public string DrugName { get; set; }

@@ -1,7 +1,7 @@
 using AutoMapper;
+using FarmerApp.API.Models.ViewModels.ResponseModels.Sale;
 using FarmerApp.Core.Models.Sale;
 using FarmerApp.Models.ViewModels.RequestModels;
-using FarmerApp.Models.ViewModels.ResponseModels;
 
 namespace FarmerApp.MapperProfiles
 {
@@ -10,7 +10,8 @@ namespace FarmerApp.MapperProfiles
         public SaleProfile()
         {
             CreateMap<SaleRequestModel, SaleModel>();
-            CreateMap<SaleModel, SaleResponseModel>();
+            CreateMap<SaleModel, SaleResponseModel>()
+                .ForMember(d => d.Credit, opts => opts.MapFrom(s => Math.Abs(s.Credit)));
         }
     }
 }

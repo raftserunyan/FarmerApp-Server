@@ -1,5 +1,4 @@
-﻿using FarmerApp.Core.Services.Balance;
-using FarmerApp.Core.Services.Customer;
+﻿using FarmerApp.Core.Services.Customer;
 using FarmerApp.Core.Services.Expense;
 using FarmerApp.Core.Services.Identity;
 using FarmerApp.Core.Services.Investment;
@@ -21,7 +20,6 @@ namespace FarmerApp.Core.Extensions
             services.AddSingleton<ApplicationSettings>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
-            //services.AddScoped<IBalanceService, BalanceService>();
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IExpenseService, ExpenseService>();
             services.AddScoped<IIdentityService, IdentityService>();

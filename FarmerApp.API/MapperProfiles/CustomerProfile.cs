@@ -1,7 +1,7 @@
 using AutoMapper;
+using FarmerApp.API.Models.ViewModels.ResponseModels.Customer;
 using FarmerApp.Core.Models.Customer;
 using FarmerApp.Models.ViewModels.RequestModels;
-using FarmerApp.Models.ViewModels.ResponseModels;
 
 namespace FarmerApp.MapperProfiles
 {
@@ -10,6 +10,7 @@ namespace FarmerApp.MapperProfiles
         public CustomerProfile()
         {
             CreateMap<CustomerModel, CustomerResponseModel>();
+            CreateMap<CustomerModel, CustomerWithNoDepsResponseModel>();
             CreateMap<CustomerRequestModel, CustomerModel>();
         }
     }

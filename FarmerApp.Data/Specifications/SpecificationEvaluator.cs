@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using FarmerApp.Data.Entities.Base;
 using FarmerApp.Data.Specifications.Common;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using FarmerApp.Data.Entities;
 
 namespace FarmerApp.Data.Specifications
 {

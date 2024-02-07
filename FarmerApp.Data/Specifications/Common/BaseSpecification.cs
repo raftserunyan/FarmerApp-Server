@@ -16,17 +16,21 @@ namespace FarmerApp.Data.Specifications.Common
 
         #region Properties
         public Expression<Func<TEntity, bool>> Criteria { get; set; }
+
         public List<Expression<Func<TEntity, object>>> Includes { get; } = new();
         public List<string> IncludeStrings { get; } = new List<string>();
+
         public List<Expression<Func<TEntity, object>>> OrderBy { get; private set; } = new();
         public List<Expression<Func<TEntity, object>>> OrderByDescending { get; private set; } = new();
+
         public Expression<Func<TEntity, object>> GroupBy { get; private set; }
+
         public int Take { get; private set; }
         public int Skip { get; private set; }
         public bool IsPagingEnabled { get; private set; } = false;
         #endregion
 
-        #region Methods
+        #region Methods 
         public virtual void ApplyPaging(int pageNumber, int pageSize)
         {
             Skip = (pageNumber - 1) * pageSize;
