@@ -20,11 +20,11 @@ jobs:
 
     - name: Check and increment version
       run: |
-        CURRENT_VERSION=$(grep -oP 'Version = "\K[^"]+' FarmerApp/Program.cs)
+        CURRENT_VERSION=$(grep -oP 'Version = "\K[^"]+' FarmerApp.API/Program.cs)
 
-        if git rev-list --max-count=1 HEAD -- FarmerApp/Program.cs >/dev/null 2>&1; then
-          git checkout $(git rev-list --max-count=1 HEAD^ -- FarmerApp/Program.cs)
-          PREVIOUS_VERSION=$(grep -oP 'Version = "\K[^"]+' FarmerApp/Program.cs)
+        if git rev-list --max-count=1 HEAD -- FarmerApp.API/Program.cs >/dev/null 2>&1; then
+          git checkout $(git rev-list --max-count=1 HEAD^ -- FarmerApp.API/Program.cs)
+          PREVIOUS_VERSION=$(grep -oP 'Version = "\K[^"]+' FarmerApp.API/Program.cs)
           git checkout -
         else
           PREVIOUS_VERSION=""
@@ -47,11 +47,11 @@ jobs:
           fi
 
           IFS='.'; NEW_VERSION="v${VERSION_PARTS[*]}";
-          sed -i "s/$CURRENT_VERSION/$NEW_VERSION/g" FarmerApp/Program.cs
+          sed -i "s/$CURRENT_VERSION/$NEW_VERSION/g" FarmerApp.API/Program.cs
         
           git config --global user.name "GitHub Actions"
           git config --global user.email "github-actions@github.com"
-          git add FarmerApp/Program.cs
+          git add FarmerApp.API/Program.cs
           git commit -m "Increment version to $NEW_VERSION"
           git push
 
