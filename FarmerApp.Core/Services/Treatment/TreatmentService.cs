@@ -22,7 +22,6 @@ namespace FarmerApp.Core.Services.Treatment
                 BadRequest("No treated products specified");
 
             var products = await _uow.Repository<ProductEntity>().GetAllBySpecification(new ProductsByGivenIdsSpecification(model.TreatedProductsIds));
-
             entity.Products = products; 
 
             await _uow.Repository<TreatmentEntity>().Add(entity);
@@ -39,20 +38,8 @@ namespace FarmerApp.Core.Services.Treatment
 
             var existingEntity = await GetEntityBySpecification(new TreatmentWithDepsByIdSpecification(entity.Id));
 
-            #region Add/Remove new/old products
-
-            var newProductIds = model.TreatedProductsIds.Except(existingEntity.Products.Select(p => p.Id));
-            var removedProductIds = existingEntity.Products.Select(p => p.Id).Except(model.TreatedProductsIds);
-
-            // Remove olds
-            foreach (var productId in removedProductIds)
-                existingEntity.Products.Remove(existingEntity.Products.First(p => p.Id == productId));
-
-            // Add news
-            var newProducts = await _uow.Repository<ProductEntity>().GetAllBySpecification(new ProductsByGivenIdsSpecification(newProductIds));
-            newProducts.ForEach(x => existingEntity.Products.Add(x));
-
-            #endregion
+            var products = await _uow.Repository<ProductEntity>().GetAllBySpecification(new ProductsByGivenIdsSpecification(model.TreatedProductsIds));
+            existingEntity.Products = products;
 
             _mapper.Map(entity, existingEntity);
             await _uow.SaveChangesAsync();
