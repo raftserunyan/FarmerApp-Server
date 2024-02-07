@@ -29,4 +29,4 @@ ENV REFRESH_TOKEN_EXPIRY_MINUTES=$REFRESH_TOKEN_EXPIRY_MINUTES
 WORKDIR /app
 COPY --from=build /app/published-app /app
 
-ENTRYPOINT [ "dotnet", "/app/FarmerApp.dll" ]
+ENTRYPOINT [ "dotnet", "/app/FarmerApp.API.dll" ]
