@@ -1,7 +1,7 @@
 ﻿using FarmerApp.Models.ViewModels.RequestModels;
-using FarmerApp.Models.ViewModels.ResponseModels;
 using AutoMapper;
 using FarmerApp.Core.Models.Target;
+using FarmerApp.API.Models.ViewModels.ResponseModels.Target;
 
 namespace FarmerApp.MapperProfiles
 {

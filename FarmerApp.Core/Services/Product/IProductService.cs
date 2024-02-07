@@ -4,7 +4,7 @@ using FarmerApp.Data.Entities;
 
 namespace FarmerApp.Core.Services.Product
 {
-    public interface IProductService : ICommonService<ProductModel, ProductEntity>
+    public interface IProductService : IBaseService<ProductModel, ProductEntity>
     {
     }
 }

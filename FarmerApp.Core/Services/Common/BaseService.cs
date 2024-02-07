@@ -12,14 +12,14 @@ using System.Linq.Expressions;
 
 namespace FarmerApp.Core.Services.Common
 {
-    internal abstract class CommonService<TModel, TEntity> : ICommonService<TModel, TEntity>
+    internal abstract class BaseService<TModel, TEntity> : IBaseService<TModel, TEntity>
         where TEntity : BaseEntity
         where TModel : BaseModel
     {
         protected readonly IUnitOfWork _uow;
         protected readonly IMapper _mapper;
 
-        protected CommonService(IUnitOfWork uow, IMapper mapper)
+        protected BaseService(IUnitOfWork uow, IMapper mapper)
         {
             _uow = uow;
             _mapper = mapper;

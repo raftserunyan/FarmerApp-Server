@@ -1,4 +1,4 @@
-﻿namespace FarmerApp.Models.ViewModels.ResponseModels
+﻿namespace FarmerApp.API.Models.ViewModels.ResponseModels.Investment
 {
     public class InvestmentResponseModel
     {

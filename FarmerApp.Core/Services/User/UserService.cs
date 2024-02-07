@@ -6,7 +6,7 @@ using FarmerApp.Data.UnitOfWork;
 
 namespace FarmerApp.Core.Services.User
 {
-    internal class UserService : CommonService<UserModel, UserEntity>, IUserService
+    internal class UserService : BaseService<UserModel, UserEntity>, IUserService
     {
         public UserService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {

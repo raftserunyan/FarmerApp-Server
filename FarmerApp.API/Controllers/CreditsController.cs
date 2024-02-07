@@ -14,12 +14,12 @@ namespace FarmerApp.API.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class CreditController : ControllerBase
+    public class CreditsController : ControllerBase
     {
         private readonly ISaleService _saleService;
         private readonly IMapper _mapper;
 
-        public CreditController(ISaleService saleService, IMapper mapper)
+        public CreditsController(ISaleService saleService, IMapper mapper)
         {
             _saleService = saleService;
             _mapper = mapper;

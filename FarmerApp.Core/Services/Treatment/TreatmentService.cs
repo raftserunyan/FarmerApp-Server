@@ -6,7 +6,7 @@ using FarmerApp.Data.UnitOfWork;
 
 namespace FarmerApp.Core.Services.Treatment
 {
-    internal class TreatmentService : CommonService<TreatmentModel, TreatmentEntity>, ITreatmentService
+    internal class TreatmentService : BaseService<TreatmentModel, TreatmentEntity>, ITreatmentService
     {
         public TreatmentService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {

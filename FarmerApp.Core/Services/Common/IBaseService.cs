@@ -6,7 +6,7 @@ using FarmerApp.Data.Specifications.Common;
 
 namespace FarmerApp.Core.Services.Common
 {
-    public interface ICommonService<TModel, TEntity>
+    public interface IBaseService<TModel, TEntity>
         where TEntity : BaseEntity
         where TModel : BaseModel
     {

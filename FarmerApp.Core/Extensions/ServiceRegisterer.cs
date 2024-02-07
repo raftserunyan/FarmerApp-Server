@@ -2,6 +2,7 @@
 using FarmerApp.Core.Services.Expense;
 using FarmerApp.Core.Services.Identity;
 using FarmerApp.Core.Services.Investment;
+using FarmerApp.Core.Services.MeasurementUnit;
 using FarmerApp.Core.Services.Product;
 using FarmerApp.Core.Services.Sale;
 using FarmerApp.Core.Services.Target;
@@ -29,6 +30,7 @@ namespace FarmerApp.Core.Extensions
             services.AddScoped<ISaleService, SaleService>();
             services.AddScoped<ITargetService, TargetService>();
             services.AddScoped<ITreatmentService, TreatmentService>();
+            services.AddScoped<IMeasurementUnitService, MeasurementUnitSerivce>();
 
             return services;
         }

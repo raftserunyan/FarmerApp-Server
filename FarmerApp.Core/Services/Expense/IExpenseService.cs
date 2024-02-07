@@ -4,7 +4,7 @@ using FarmerApp.Data.Entities;
 
 namespace FarmerApp.Core.Services.Expense
 {
-    public interface IExpenseService : ICommonService<ExpenseModel, ExpenseEntity>
+    public interface IExpenseService : IBaseService<ExpenseModel, ExpenseEntity>
     {
     }
 }

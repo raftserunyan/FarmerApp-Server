@@ -20,6 +20,7 @@ namespace FarmerApp.Data.DAO
         public DbSet<InvestmentEntity> Investments { get; set; }
         public DbSet<TreatmentEntity> Treatments { get; set; }
         public DbSet<TargetEntity> Targets { get; set; }
+        public DbSet<MeasurementUnitEntity> MeasurementUnits { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

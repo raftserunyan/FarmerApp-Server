@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using FarmerApp.API.Controllers;
+using FarmerApp.API.Models.ViewModels.ResponseModels.Target;
 using FarmerApp.Core.Models.Target;
 using FarmerApp.Core.Services.Target;
 using FarmerApp.Data.Entities;
 using FarmerApp.Models.ViewModels.RequestModels;
-using FarmerApp.Models.ViewModels.ResponseModels;
 
 namespace FarmerApp.Controllers
 {

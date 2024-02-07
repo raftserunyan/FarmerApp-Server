@@ -6,7 +6,7 @@ using FarmerApp.Data.UnitOfWork;
 
 namespace FarmerApp.Core.Services.Expense
 {
-    internal class ExpenseService : CommonService<ExpenseModel, ExpenseEntity>, IExpenseService
+    internal class ExpenseService : BaseService<ExpenseModel, ExpenseEntity>, IExpenseService
     {
         public ExpenseService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {

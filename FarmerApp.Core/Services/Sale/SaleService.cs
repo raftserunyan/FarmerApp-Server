@@ -6,7 +6,7 @@ using FarmerApp.Data.UnitOfWork;
 
 namespace FarmerApp.Core.Services.Sale
 {
-    internal class SaleService : CommonService<SaleModel, SaleEntity>, ISaleService
+    internal class SaleService : BaseService<SaleModel, SaleEntity>, ISaleService
     {
         public SaleService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {

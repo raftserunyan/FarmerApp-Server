@@ -24,11 +24,11 @@ namespace FarmerApp.API.Controllers
     {
         protected readonly int _depth;
         protected readonly IMapper _mapper;
-        protected readonly ICommonService<TModel, TEntity> _service;
+        protected readonly IBaseService<TModel, TEntity> _service;
 
         protected int UserId => GetCurrentUserId();
 
-        protected BaseController(ICommonService<TModel, TEntity> service, IMapper mapper, int depth = 1)
+        protected BaseController(IBaseService<TModel, TEntity> service, IMapper mapper, int depth = 1)
         {
             _service = service;
             _depth = depth;
