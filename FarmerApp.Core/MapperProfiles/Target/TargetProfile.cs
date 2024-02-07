@@ -1,10 +1,10 @@
-﻿using AutoMapper;
+﻿using FarmerApp.Core.MapperProfiles.Common;
 using FarmerApp.Core.Models.Target;
 using FarmerApp.Data.Entities;
 
 namespace FarmerApp.Core.MapperProfiles.Target
 {
-    public class TargetProfile : Profile
+    public class TargetProfile : BaseProfile<TargetEntity>
     {
         public TargetProfile()
         {

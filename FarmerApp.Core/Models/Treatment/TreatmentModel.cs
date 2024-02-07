@@ -11,7 +11,7 @@ namespace FarmerApp.Core.Models.Treatment
         public double DrugAmount { get; set; }
         public DateTime? Date { get; set; }
 
-        public string TreatedProductsIds { get; set; }
+        public int[] TreatedProductsIds { get; set; }
 
         public int? MeasurementUnitId { get; set; }
         public MeasurementUnitModel MeasurementUnit { get; set; }

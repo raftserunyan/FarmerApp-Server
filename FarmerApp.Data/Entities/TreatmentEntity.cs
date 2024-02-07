@@ -10,9 +10,6 @@ namespace FarmerApp.Data.Entities
 		public double DrugAmount { get; set; }
         public DateTime? Date { get; set; }
 
-        [NotMapped]
-        public string TreatedProductsIds { get; set; }
-
         public int? MeasurementUnitId { get; set; }
         public MeasurementUnitEntity MeasurementUnit { get; set; }
 

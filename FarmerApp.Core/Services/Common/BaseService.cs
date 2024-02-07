@@ -36,7 +36,7 @@ namespace FarmerApp.Core.Services.Common
                 specification = new EmptySpecification<TEntity>();
 
             int? total = null;
-            
+
             if (query is not null)
             {
                 FilterResults(specification, query);
@@ -168,6 +168,13 @@ namespace FarmerApp.Core.Services.Common
             return entity;
         }
 
+        protected async Task<TEntity> GetEntityBySpecification(ISpecification<TEntity> specification, bool includeDeleted = false)
+        {
+            var entity = await _uow.Repository<TEntity>().GetFirstBySpecification(specification, includeDeleted);
+            EnsureExists(entity, $"Entity was not found");
+            return entity;
+        }
+
         protected void EnsureExists<TObject>(TObject entity, string message = "Not found") where TObject : class
         {
             if (entity is null)
@@ -202,6 +209,7 @@ namespace FarmerApp.Core.Services.Common
         }
         #endregion
 
+        #region Private classes
         private class ParameterReplacer : ExpressionVisitor
         {
             private readonly ParameterExpression _oldParameter;
@@ -218,5 +226,6 @@ namespace FarmerApp.Core.Services.Common
                 return node == _oldParameter ? _newParameter : base.VisitParameter(node);
             }
         }
+        #endregion
     }
 }

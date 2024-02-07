@@ -12,7 +12,7 @@ namespace FarmerApp.API.Models.ViewModels.ResponseModels.Treatment
         
         public MeasurementUnitResponseModel MeasurementUnit { get; set; }
 
-        public ICollection<ProductResponseModel> Products { get; set; }
+        public ICollection<ProductWithNoDepsResponseModel> Products { get; set; }
     }
 }
 
