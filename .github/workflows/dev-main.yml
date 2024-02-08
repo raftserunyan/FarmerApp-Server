@@ -81,8 +81,7 @@ jobs:
         --build-arg REFRESH_TOKEN_EXPIRY_MINUTES="${{ secrets.REFRESH_TOKEN_EXPIRY_MINUTES }}"
         --build-arg SEED_USERNAME="${{ secrets.SEED_USERNAME }}"
         --build-arg SEED_PASS="${{ secrets.SEED_PASS }}"
-	--build-arg ENVIRONMENT="DEV"
-
+        --build-arg ENVIRONMENT="DEV"
         -t ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:dev
       
     - name: Login to Docker Hub
