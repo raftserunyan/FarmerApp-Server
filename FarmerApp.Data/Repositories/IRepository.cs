@@ -28,6 +28,6 @@ namespace FarmerApp.Data.Repositories
 
         void DeleteRange(IEnumerable<TEntity> entities, DeleteOptions deleteOption = DeleteOptions.Soft);
 
-        Task<int> Count();
+        Task<int> Count(ISpecification<TEntity> specification = null, bool includeDeleted = false);
     }
 }
