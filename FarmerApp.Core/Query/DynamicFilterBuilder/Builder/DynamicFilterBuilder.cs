@@ -8,11 +8,11 @@ namespace FarmerApp.Core.Query.DynamicFilterBuilder.Builder;
 
 public class DynamicFilterBuilder<T>
 {
-    public static DynamicFilterBuilder<T> Instance = new();
+    private static readonly DynamicFilterBuilder<T> dynamicFilterBuilder = new();
     private readonly PropertyInfo[] _properties;
-
-
     private readonly Type _type;
+
+    public static DynamicFilterBuilder<T> Instance = dynamicFilterBuilder;
 
     private DynamicFilterBuilder()
     {

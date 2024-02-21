@@ -11,7 +11,6 @@ using FarmerApp.Shared.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Drawing.Text;
 
 namespace FarmerApp.API.Controllers
 {

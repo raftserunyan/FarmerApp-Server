@@ -25,6 +25,7 @@ public class DynamicDepthBuilder<T> where T : BaseEntity
 
         foreach (var fieldName in fieldsToInclude) 
             source = source.Include(fieldName);
+
         return source;
     }
 
@@ -37,22 +38,24 @@ public class DynamicDepthBuilder<T> where T : BaseEntity
 
         while (queue.Count > 0)
         {
-            var current = queue.Dequeue();
-            if (current.depth + 1 <= _maxDepth)
-                foreach (var childProp in ParseForeignObjectProperties(current.type, current.parentType))
+            var (type, depth, fullPath, parentType) = queue.Dequeue();
+            if (depth + 1 <= _maxDepth)
+            {
+                foreach (var childProp in ParseForeignObjectProperties(type, parentType))
                 {
-                    var childFullPath = string.Join('.', current.fullPath, childProp.Name);
-                    childFullPath = childFullPath.StartsWith('.') ? childFullPath.Substring(1) : childFullPath;
+                    var childFullPath = string.Join('.', fullPath, childProp.Name);
+                    childFullPath = childFullPath.StartsWith('.') ? childFullPath[1..] : childFullPath;
 
                     fieldNamesToInclude.Add(childFullPath);
-                    queue.Enqueue((ParsePropertyActualType(childProp), current.depth + 1, childFullPath, current.type)!);
+                    queue.Enqueue((ParsePropertyActualType(childProp), depth + 1, childFullPath, type)!);
                 }
+            }
         }
 
         return fieldNamesToInclude;
     }
 
-    private IEnumerable<PropertyInfo> ParseForeignObjectProperties(Type type, Type parentType = null)
+    private static IEnumerable<PropertyInfo> ParseForeignObjectProperties(Type type, Type parentType = null)
     {
         return type.GetProperties().Where(x => x.PropertyType.IsSubclassOf(typeof(DbEntity)) ||
                                                x.PropertyType.GetGenericArguments()
@@ -61,7 +64,7 @@ public class DynamicDepthBuilder<T> where T : BaseEntity
             .ToList();
     }
 
-    private Type ParsePropertyActualType(PropertyInfo pInfo)
+    private static Type ParsePropertyActualType(PropertyInfo pInfo)
     {
         if (pInfo.PropertyType.IsSubclassOf(typeof(DbEntity)))
             return pInfo.PropertyType;

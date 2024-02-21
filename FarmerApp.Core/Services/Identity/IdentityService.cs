@@ -16,10 +16,10 @@ namespace FarmerApp.Core.Services.Identity
     {
         const string IdClaimName = "NameIdentifier";
 
-        int accessExpiryMinutes;
-        int refreshExpiryMinutes;
-        string clientSecretKey;
-        string clientSecretKeyForRefresh;
+        readonly int accessExpiryMinutes;
+        readonly int refreshExpiryMinutes;
+        readonly string clientSecretKey;
+        readonly string clientSecretKeyForRefresh;
 
         private readonly IUnitOfWork _uow;
         private readonly ApplicationSettings _settings;
@@ -128,7 +128,7 @@ namespace FarmerApp.Core.Services.Identity
             };
         }
 
-        private string GenerateJwtToken(UserEntity user, string secretKey, int expiryMinutes)
+        private static string GenerateJwtToken(UserEntity user, string secretKey, int expiryMinutes)
         {
             // Create claims for the token
             var claims = new[]
@@ -164,7 +164,7 @@ namespace FarmerApp.Core.Services.Identity
             return tokenString;
         }
 
-        private ClaimsPrincipal GetClaimsPrincipalFromJwtToken(string jwtToken, string secretKey)
+        private static ClaimsPrincipal GetClaimsPrincipalFromJwtToken(string jwtToken, string secretKey)
         {
             var validationParameters = new TokenValidationParameters
             {
@@ -178,13 +178,12 @@ namespace FarmerApp.Core.Services.Identity
             var tokenHandler = new JwtSecurityTokenHandler();
 
             // Read the token and parse its claims
-            ClaimsPrincipal claimsPrincipal = null;
-
+            ClaimsPrincipal claimsPrincipal;
             try
             {
                 claimsPrincipal = tokenHandler.ValidateToken(jwtToken, validationParameters, out var validatedToken);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new BadRequestException("Invalid token");
             }
@@ -192,7 +191,7 @@ namespace FarmerApp.Core.Services.Identity
             return claimsPrincipal;
         }
 
-        private bool IsTokenExpired(string jwtToken)
+        private static bool IsTokenExpired(string jwtToken)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwtSecurityToken = tokenHandler.ReadToken(jwtToken) as JwtSecurityToken;

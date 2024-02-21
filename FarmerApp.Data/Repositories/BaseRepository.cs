@@ -85,8 +85,6 @@ namespace FarmerApp.Data.Repositories
                 case DeleteOptions.Hard:
                     HardDelete(entity);
                     break;
-                default:
-                    break;
             }
         }
 

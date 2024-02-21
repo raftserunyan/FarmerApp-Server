@@ -32,8 +32,7 @@ namespace FarmerApp.Core.Services.Common
         }
         public virtual async Task<PagedResult<TModel>> GetAll(ISpecification<TEntity> specification = null, BaseQueryModel query = null, bool includeDeleted = false)
         {
-            if (specification is null)
-                specification = new EmptySpecification<TEntity>();
+            specification ??= new EmptySpecification<TEntity>();
 
             int? total = null;
 
@@ -102,7 +101,7 @@ namespace FarmerApp.Core.Services.Common
         public virtual async Task<TModel> Update(TModel model)
         {
             var entity = ValidateAndMap(model, "Model to be updated was null");
-            if (entity.Id == default(int))
+            if (entity.Id == default)
                 throw BadRequest("Model must have an Id for updating");
 
             var existingEntity = await GetEntityById(entity.Id);
@@ -175,7 +174,7 @@ namespace FarmerApp.Core.Services.Common
             return entity;
         }
 
-        protected void EnsureExists<TObject>(TObject entity, string message = "Not found") where TObject : class
+        protected static void EnsureExists<TObject>(TObject entity, string message = "Not found") where TObject : class
         {
             if (entity is null)
             {
@@ -183,7 +182,7 @@ namespace FarmerApp.Core.Services.Common
             }
         }
 
-        protected BadRequestException BadRequest(string message = "Bad Request")
+        protected static BadRequestException BadRequest(string message = "Bad Request")
         {
             throw new BadRequestException(message);
         }
