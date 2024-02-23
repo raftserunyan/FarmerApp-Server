@@ -50,9 +50,9 @@ namespace FarmerApp.Data.UnitOfWork
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException ex)
+            catch (DbUpdateConcurrencyException)
             {
-                throw;// new EntityUpdateConcurrencyException(ex.Entries);
+                throw; // new EntityUpdateConcurrencyException(ex.Entries);
             }
             catch (DbUpdateException ex)
             {

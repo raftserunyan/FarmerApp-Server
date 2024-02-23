@@ -12,7 +12,7 @@ namespace FarmerApp.Middlewares
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task Invoke(HttpContext context, ILogger<ExceptionHandlingMiddleware> logger)
         {
             try
             {
@@ -22,7 +22,6 @@ namespace FarmerApp.Middlewares
             {
                 var response = context.Response;
                 response.ContentType = "text";
-
 
                 switch (error)
                 {
@@ -56,6 +55,8 @@ namespace FarmerApp.Middlewares
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         break;
                 }
+
+                logger.LogError(error, error.Message);
 
                 await response.WriteAsync(error.Message);
             }

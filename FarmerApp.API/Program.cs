@@ -1,6 +1,7 @@
 ﻿using FarmerApp.API.Utils;
 using FarmerApp.API.Utils.Swagger;
 using FarmerApp.Core.Extensions;
+using FarmerApp.Core.Utils;
 using FarmerApp.Data.DAO;
 using FarmerApp.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -70,9 +71,9 @@ builder.Services
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddDbContext<FarmerDbContext>(opts =>
-    opts.UseSqlServer(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING", EnvironmentVariableTarget.Process)
-                        ?? builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped);
+var appSettings = new ApplicationSettings(builder.Configuration);
+builder.Services.AddDbContext<FarmerDbContext>(opts =>opts.UseSqlServer(appSettings.ConnectionString), ServiceLifetime.Scoped);
+builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSeq());
 
 builder.Services.AddCustomServices();
 
