@@ -6,7 +6,7 @@ using FarmerApp.Core.Query;
 using FarmerApp.Core.Services.Investment;
 using FarmerApp.Core.Wrappers;
 using FarmerApp.Data.Entities;
-using FarmerApp.Data.Specifications.Investments;
+using FarmerApp.Data.Specifications.Investment;
 using FarmerApp.Models.ViewModels.RequestModels;
 using Microsoft.AspNetCore.Mvc;
 

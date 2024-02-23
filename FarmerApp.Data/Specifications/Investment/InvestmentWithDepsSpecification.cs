@@ -1,7 +1,7 @@
 ﻿using FarmerApp.Data.Entities;
 using FarmerApp.Data.Specifications.Common;
 
-namespace FarmerApp.Data.Specifications.Investments
+namespace FarmerApp.Data.Specifications.Investment
 {
     public class InvestmentWithDepsSpecification : BaseSpecification<InvestmentEntity>
     {
