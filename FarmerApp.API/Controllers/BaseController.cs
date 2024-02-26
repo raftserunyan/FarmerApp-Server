@@ -89,7 +89,7 @@ namespace FarmerApp.API.Controllers
             return Ok();
         }
 
-        private void EnsureUserHasAccess(IHasUserModel model, Exception exception = null)
+        protected void EnsureUserHasAccess(IHasUserModel model, Exception exception = null)
         {
             if (model.UserId != UserId)
             {

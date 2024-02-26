@@ -22,7 +22,7 @@ namespace FarmerApp.Controllers
 
         public override async Task<ActionResult<PagedResult<ExpenseResponseModel>>> Read([FromBody] BaseQueryModel query)
         {
-            var expenses = await _service.GetAll(new ExpensesWithDepsSpecification(), query);
+            var expenses = await _service.GetAll(new AllExpensesWithDepsSpecification(), query);
 
             return _mapper.Map<PagedResult<ExpenseResponseModel>>(expenses);
         }
@@ -33,9 +33,10 @@ namespace FarmerApp.Controllers
             businessModel.UserId = UserId;
 
             var data = await _service.Add(businessModel);
+            var entity = await _service.GetFirstBySpecification(new ExpenseByIdWithDepsSpecification((int)data.Id));
 
             // Fix this when depth builder is available
-            return await ReadById((int)data.Id);
+            return _mapper.Map<ExpenseResponseModel>(entity);
         }
     }
 }
