@@ -4,7 +4,6 @@
     {
         public ExpenseByIdWithDepsSpecification(int id) : base(x => x.Id == id)
         {
-            AddInclude(x => x.Target);
         }
     }
 }
