@@ -20,34 +20,41 @@ namespace FarmerApp.Middlewares
             }
             catch (Exception error)
             {
+                logger.LogError(error, error.Message);
+
                 var response = context.Response;
                 response.ContentType = "text";
 
                 switch (error)
                 {
-                    case NotFoundException e:
+                    case NotFoundException:
                         {
                             response.StatusCode = (int)HttpStatusCode.NotFound;
                             break;
                         }
-                    case BadHttpRequestException e:
+                    case BadHttpRequestException:
                         {
                             response.StatusCode = (int)HttpStatusCode.BadRequest;
                             break;
                         }
-                    case BadRequestException e:
+                    case BadRequestException:
                         {
                             response.StatusCode = (int)HttpStatusCode.BadRequest;
                             break;
                         }
-                    case UnauthorizedAccessException e:
+                    case UnauthorizedAccessException:
                         {
                             response.StatusCode = (int)HttpStatusCode.Unauthorized;
                             break;
                         }
-                    case AccessDeniedException e:
+                    case AccessDeniedException:
                         {
                             response.StatusCode = (int)HttpStatusCode.Forbidden;
+                            break;
+                        }
+                    case DbConcurrencyException e:
+                        {
+                            response.StatusCode = (int)HttpStatusCode.Conflict;
                             break;
                         }
                     default:
@@ -55,8 +62,6 @@ namespace FarmerApp.Middlewares
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         break;
                 }
-
-                logger.LogError(error, error.Message);
 
                 await response.WriteAsync(error.Message);
             }

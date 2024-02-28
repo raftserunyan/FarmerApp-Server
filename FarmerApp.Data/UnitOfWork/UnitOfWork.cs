@@ -1,10 +1,11 @@
-﻿using System.Collections;
-using FarmerApp.Data.DAO;
+﻿using FarmerApp.Data.DAO;
 using FarmerApp.Data.Entities.Base;
 using FarmerApp.Data.Repositories;
 using FarmerApp.Shared.Exceptions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Collections;
 
 namespace FarmerApp.Data.UnitOfWork
 {
@@ -50,9 +51,9 @@ namespace FarmerApp.Data.UnitOfWork
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
-                throw; // new EntityUpdateConcurrencyException(ex.Entries);
+                ThrowDetailedConcurrencyException(ex);
             }
             catch (DbUpdateException ex)
             {
@@ -64,5 +65,45 @@ namespace FarmerApp.Data.UnitOfWork
                 }
             }
         }
+
+        private void ThrowDetailedConcurrencyException(DbUpdateConcurrencyException ex)
+        {
+            var errors = ex.Entries
+                .SelectMany(entry => GetConcurrencyErrors(entry))
+                .ToList();
+
+            if (errors.Any())
+            {
+                throw new DbConcurrencyException(errors);
+            }
+        }
+
+        private IEnumerable<DbConcurrencyExceptionItem> GetConcurrencyErrors(EntityEntry entry)
+        {
+            var proposedValues = entry.CurrentValues;
+            var originalValues = entry.OriginalValues;
+            var databaseValues = entry.GetDatabaseValues();
+
+            foreach (var property in proposedValues.Properties)
+            {
+                var proposedValue = proposedValues[property];
+                var originalValue = originalValues[property];
+                var databaseValue = databaseValues[property];
+
+                if (!originalValue.Equals(databaseValue) 
+                    && !property.Name.Equals(nameof(BaseEntity.Version)))
+                {
+                    yield return new DbConcurrencyExceptionItem
+                    {
+                        Entity = entry.Metadata.Name.Split('.').Last(),
+                        Property = property.Name,
+                        ProposedValue = proposedValue,
+                        OriginalValue = originalValue, 
+                        DatabaseValue = databaseValue
+                    };
+                }
+            }
+        }
+
     }
 }

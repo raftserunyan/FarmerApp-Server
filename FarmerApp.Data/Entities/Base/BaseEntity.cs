@@ -10,5 +10,8 @@ namespace FarmerApp.Data.Entities.Base
         public DateTime CreatedDate { get; set; }
         public DateTime LastUpdatedDate { get; set; }
         public bool IsDeleted { get; set; } = false;
+
+        [Timestamp]
+        public byte[] Version { get; set; }
     }
 }
