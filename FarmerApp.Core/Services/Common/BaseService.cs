@@ -32,7 +32,7 @@ namespace FarmerApp.Core.Services.Common
         {
             return await GetAll(null, query, includeDeleted, depth, propertyTypesToExclude);
         }
-        public virtual async Task<PagedResult<TModel>> GetAll(ISpecification<TEntity> specification = null, BaseQueryModel query = null, 
+        public virtual async Task<PagedResult<TModel>> GetAll(ISpecification<TEntity> specification = null, BaseQueryModel query = null,
                                                     bool includeDeleted = false, int depth = 1, IEnumerable<string> propertyTypesToExclude = default)
         {
             specification ??= new EmptySpecification<TEntity>();
@@ -61,18 +61,22 @@ namespace FarmerApp.Core.Services.Common
             };
         }
 
-        public virtual async Task<TModel> GetById(int id, bool includeDeleted = false, 
+        public virtual async Task<TModel> GetById(int id, bool includeDeleted = false,
                                                 int depth = 1, IEnumerable<string> propertyTypesToExclude = default)
         {
             var entity = await GetEntityById(id, includeDeleted, depth, propertyTypesToExclude);
 
             return _mapper.Map<TModel>(entity);
         }
-        public virtual async Task<TModel> GetFirstBySpecification(ISpecification<TEntity> specification, bool includeDeleted = false, 
+        public virtual async Task<TModel> GetFirstBySpecification(ISpecification<TEntity> specification, bool includeDeleted = false,
                                                                     int depth = 1, IEnumerable<string> propertyTypesToExclude = default)
         {
-            var propertiesToInclude = new DynamicDepthBuilder<TEntity>().Build(depth, propertyTypesToExclude);
-            specification.IncludeStrings.AddRange(propertiesToInclude);
+            // Apply the includes by depth if they are not set explicitly
+            if (!specification.Includes.Any() && !specification.IncludeStrings.Any())
+            {
+                var propertiesToInclude = new DynamicDepthBuilder<TEntity>().Build(depth, propertyTypesToExclude);
+                specification.IncludeStrings.AddRange(propertiesToInclude);
+            }
 
             var entity = await _uow.Repository<TEntity>().GetFirstBySpecification(specification, includeDeleted);
 
@@ -139,9 +143,13 @@ namespace FarmerApp.Core.Services.Common
 
         protected static void IncludeDependenciesByDepth(ISpecification<TEntity> specification, int depth, IEnumerable<string> _propertyTypesToExclude)
         {
-            var propertiesToInclude = new DynamicDepthBuilder<TEntity>().Build(depth, _propertyTypesToExclude);
+            // Apply the includes by depth if they are not set explicitly
+            if (!specification.Includes.Any() && !specification.IncludeStrings.Any())
+            {
+                var propertiesToInclude = new DynamicDepthBuilder<TEntity>().Build(depth, _propertyTypesToExclude);
 
-            specification.IncludeStrings.AddRange(propertiesToInclude);
+                specification.IncludeStrings.AddRange(propertiesToInclude);
+            }
         }
 
         protected static void OrderResults(ISpecification<TEntity> specification, IEnumerable<OrderingItem> orderings)
