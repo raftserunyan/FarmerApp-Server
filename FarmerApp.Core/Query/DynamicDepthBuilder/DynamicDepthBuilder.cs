@@ -1,6 +1,6 @@
-﻿using System.Reflection;
-using FarmerApp.Data.Entities.Base;
+﻿using FarmerApp.Data.Entities.Base;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace FarmerApp.Core.Query.DynamicDepthBuilder;
 
@@ -14,22 +14,19 @@ public class DynamicDepthBuilder<T> where T : BaseEntity
         _type = typeof(T);
     }
 
-    public IQueryable<T> Build(IQueryable<T> source, int depth)
+    public IEnumerable<string> Build(int depth, IEnumerable<string> propertyTypesToExclude)
     {
-        if (depth <= 1)
-            return source;
+        if (depth < 2)
+            return Enumerable.Empty<string>();
 
         _maxDepth = depth;
 
-        var fieldsToInclude = ParsePropertyNamesToInclude();
+        var fieldsToInclude = FindPropertyNamesToInclude(propertyTypesToExclude);
 
-        foreach (var fieldName in fieldsToInclude) 
-            source = source.Include(fieldName);
-
-        return source;
+        return fieldsToInclude;
     }
 
-    private ICollection<string> ParsePropertyNamesToInclude()
+    private ICollection<string> FindPropertyNamesToInclude(IEnumerable<string> propertyTypesToExclude)
     {
         ICollection<string> fieldNamesToInclude = new List<string>();
         var queue = new Queue<(Type type, int depth, string fullPath, Type parentType)>();
@@ -39,10 +36,13 @@ public class DynamicDepthBuilder<T> where T : BaseEntity
         while (queue.Count > 0)
         {
             var (type, depth, fullPath, parentType) = queue.Dequeue();
-            if (depth + 1 <= _maxDepth)
+            if (depth < _maxDepth)
             {
                 foreach (var childProp in ParseForeignObjectProperties(type, parentType))
                 {
+                    if (propertyTypesToExclude is not null && propertyTypesToExclude.Contains(childProp.PropertyType.Name))
+                        continue;
+
                     var childFullPath = string.Join('.', fullPath, childProp.Name);
                     childFullPath = childFullPath.StartsWith('.') ? childFullPath[1..] : childFullPath;
 
@@ -68,8 +68,10 @@ public class DynamicDepthBuilder<T> where T : BaseEntity
     {
         if (pInfo.PropertyType.IsSubclassOf(typeof(DbEntity)))
             return pInfo.PropertyType;
+
         if (pInfo.PropertyType.GetGenericArguments().Any(t => t.IsSubclassOf(typeof(DbEntity))))
             return pInfo.PropertyType.GetGenericArguments().First(x => x.IsSubclassOf(typeof(DbEntity)));
+
         return default;
     }
 }

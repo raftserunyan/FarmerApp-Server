@@ -18,6 +18,8 @@ namespace FarmerApp.API.Controllers
     {
         private readonly ISaleService _saleService;
         private readonly IMapper _mapper;
+        private readonly int _depth = 2;
+        private readonly IEnumerable<string> _propertyTypesToExclude = default;
 
         public CreditsController(ISaleService saleService, IMapper mapper)
         {
@@ -30,7 +32,7 @@ namespace FarmerApp.API.Controllers
         {
             ISpecification<SaleEntity> specification = myCredits ? new SalesWhichAreOverPaidSpecification() : new SalesWhichAreNotFullyPaidSpecification();
 
-            var sales = await _saleService.GetAll(specification, query);
+            var sales = await _saleService.GetAll(specification, query, false, _depth, _propertyTypesToExclude);
 
             return Ok(_mapper.Map<PagedResult<SaleResponseModel>>(sales));
         }

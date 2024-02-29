@@ -14,23 +14,23 @@ namespace FarmerApp.Core.Services.Treatment
         {
         }
 
-        public override async Task<TreatmentModel> Add(TreatmentModel model)
-        {          
+        public override async Task<TreatmentModel> Add(TreatmentModel model, int depth = 1, IEnumerable<string> propertyTypesToExclude = null)
+        {
             var entity = ValidateAndMap(model, "Model to be added was null");
 
             if (model.TreatedProductsIds is null || !model.TreatedProductsIds.Any())
                 BadRequest("No treated products specified");
 
             var products = await _uow.Repository<ProductEntity>().GetAllBySpecification(new ProductsByGivenIdsSpecification(model.TreatedProductsIds));
-            entity.Products = products; 
+            entity.Products = products;
 
             await _uow.Repository<TreatmentEntity>().Add(entity);
             await _uow.SaveChangesAsync();
 
-            return _mapper.Map<TreatmentModel>(entity);
+            return await GetById(entity.Id, false, depth, propertyTypesToExclude);
         }
 
-        public override async Task<TreatmentModel> Update(TreatmentModel model)
+        public override async Task<TreatmentModel> Update(TreatmentModel model, int depth = 1, IEnumerable<string> propertyTypesToExclude = null)
         {
             var entity = ValidateAndMap(model, "Model to be updated was null");
             if (entity.Id == default)
@@ -44,7 +44,7 @@ namespace FarmerApp.Core.Services.Treatment
             _mapper.Map(entity, existingEntity);
             await _uow.SaveChangesAsync();
 
-            return _mapper.Map<TreatmentModel>(existingEntity);
+            return await GetById(entity.Id, false, depth, propertyTypesToExclude);
         }
     }
 }

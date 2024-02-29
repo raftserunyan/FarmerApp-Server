@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FarmerApp.Core.Models;
 using FarmerApp.Core.Query;
+using FarmerApp.Core.Query.DynamicDepthBuilder;
 using FarmerApp.Core.Query.DynamicFilterBuilder.Builder;
 using FarmerApp.Core.Query.DynamicSortingBuilder;
 using FarmerApp.Core.Wrappers;
@@ -26,11 +27,13 @@ namespace FarmerApp.Core.Services.Common
         }
 
         #region Public Methods        
-        public virtual async Task<PagedResult<TModel>> GetAll(BaseQueryModel query = null, bool includeDeleted = false)
+        public virtual async Task<PagedResult<TModel>> GetAll(BaseQueryModel query = null, bool includeDeleted = false,
+                                                            int depth = 1, IEnumerable<string> propertyTypesToExclude = default)
         {
-            return await GetAll(null, query, includeDeleted);
+            return await GetAll(null, query, includeDeleted, depth, propertyTypesToExclude);
         }
-        public virtual async Task<PagedResult<TModel>> GetAll(ISpecification<TEntity> specification = null, BaseQueryModel query = null, bool includeDeleted = false)
+        public virtual async Task<PagedResult<TModel>> GetAll(ISpecification<TEntity> specification = null, BaseQueryModel query = null, 
+                                                    bool includeDeleted = false, int depth = 1, IEnumerable<string> propertyTypesToExclude = default)
         {
             specification ??= new EmptySpecification<TEntity>();
 
@@ -42,6 +45,7 @@ namespace FarmerApp.Core.Services.Common
 
                 total = await _uow.Repository<TEntity>().Count(specification, includeDeleted);
 
+                IncludeDependenciesByDepth(specification, depth, propertyTypesToExclude);
                 OrderResults(specification, query.Orderings);
                 ApplyPaging(specification, query);
             }
@@ -57,14 +61,19 @@ namespace FarmerApp.Core.Services.Common
             };
         }
 
-        public virtual async Task<TModel> GetById(int id, bool includeDeleted = false)
+        public virtual async Task<TModel> GetById(int id, bool includeDeleted = false, 
+                                                int depth = 1, IEnumerable<string> propertyTypesToExclude = default)
         {
-            var entity = await GetEntityById(id, includeDeleted);
+            var entity = await GetEntityById(id, includeDeleted, depth, propertyTypesToExclude);
 
             return _mapper.Map<TModel>(entity);
         }
-        public virtual async Task<TModel> GetFirstBySpecification(ISpecification<TEntity> specification, bool includeDeleted = false)
+        public virtual async Task<TModel> GetFirstBySpecification(ISpecification<TEntity> specification, bool includeDeleted = false, 
+                                                                    int depth = 1, IEnumerable<string> propertyTypesToExclude = default)
         {
+            var propertiesToInclude = new DynamicDepthBuilder<TEntity>().Build(depth, propertyTypesToExclude);
+            specification.IncludeStrings.AddRange(propertiesToInclude);
+
             var entity = await _uow.Repository<TEntity>().GetFirstBySpecification(specification, includeDeleted);
 
             return _mapper.Map<TModel>(entity);
@@ -78,7 +87,6 @@ namespace FarmerApp.Core.Services.Common
 
             await _uow.SaveChangesAsync();
         }
-
         public virtual async Task Delete(int id)
         {
             var entity = await GetEntityById(id);
@@ -88,17 +96,17 @@ namespace FarmerApp.Core.Services.Common
             await _uow.SaveChangesAsync();
         }
 
-        public virtual async Task<TModel> Add(TModel model)
+        public virtual async Task<TModel> Add(TModel model, int depth = 1, IEnumerable<string> propertyTypesToExclude = default)
         {
             var entity = ValidateAndMap(model, "Model to be added was null");
 
             await _uow.Repository<TEntity>().Add(entity);
             await _uow.SaveChangesAsync();
 
-            return _mapper.Map<TModel>(entity);
+            return await GetById(entity.Id, false, depth, propertyTypesToExclude);
         }
 
-        public virtual async Task<TModel> Update(TModel model)
+        public virtual async Task<TModel> Update(TModel model, int depth = 1, IEnumerable<string> propertyTypesToExclude = default)
         {
             var entity = ValidateAndMap(model, "Model to be updated was null");
             if (entity.Id == default)
@@ -108,7 +116,7 @@ namespace FarmerApp.Core.Services.Common
             _mapper.Map(entity, existingEntity);
             await _uow.SaveChangesAsync();
 
-            return _mapper.Map<TModel>(existingEntity);
+            return await GetById(entity.Id, false, depth, propertyTypesToExclude);
         }
 
         #endregion
@@ -127,6 +135,13 @@ namespace FarmerApp.Core.Services.Common
         {
             ApplyFilters(specification, query.OrFilters, true);
             ApplyFilters(specification, query.AndFilters, false);
+        }
+
+        protected static void IncludeDependenciesByDepth(ISpecification<TEntity> specification, int depth, IEnumerable<string> _propertyTypesToExclude)
+        {
+            var propertiesToInclude = new DynamicDepthBuilder<TEntity>().Build(depth, _propertyTypesToExclude);
+
+            specification.IncludeStrings.AddRange(propertiesToInclude);
         }
 
         protected static void OrderResults(ISpecification<TEntity> specification, IEnumerable<OrderingItem> orderings)
@@ -160,10 +175,13 @@ namespace FarmerApp.Core.Services.Common
             return _mapper.Map<TEntity>(model);
         }
 
-        protected async Task<TEntity> GetEntityById(int id, bool includeDeleted = false)
+        protected async Task<TEntity> GetEntityById(int id, bool includeDeleted = false, int depth = 1, IEnumerable<string> propertyTypesToExclude = default)
         {
-            var entity = await _uow.Repository<TEntity>().GetById(id, includeDeleted);
+            var propertiesToInclude = new DynamicDepthBuilder<TEntity>().Build(depth, propertyTypesToExclude);
+
+            var entity = await _uow.Repository<TEntity>().GetById(id, includeDeleted, propertiesToInclude);
             EnsureExists(entity, $"Entity with id {id} was not found");
+
             return entity;
         }
 

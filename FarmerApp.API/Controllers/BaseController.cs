@@ -4,6 +4,7 @@ using FarmerApp.Core.Models.Interfaces;
 using FarmerApp.Core.Query;
 using FarmerApp.Core.Services.Common;
 using FarmerApp.Core.Wrappers;
+using FarmerApp.Data.Entities;
 using FarmerApp.Data.Entities.Base;
 using FarmerApp.Data.Entities.Interfaces;
 using FarmerApp.Data.Specifications.Common;
@@ -22,22 +23,25 @@ namespace FarmerApp.API.Controllers
         where TEntity : BaseEntity, IHasUser
     {
         protected readonly int _depth;
+        protected readonly IEnumerable<string> _propertyTypesToExclude = new[] { nameof(UserEntity) };
         protected readonly IMapper _mapper;
         protected readonly IBaseService<TModel, TEntity> _service;
 
         protected int UserId => GetCurrentUserId();
 
-        protected BaseController(IBaseService<TModel, TEntity> service, IMapper mapper, int depth = 1)
+        protected BaseController(IBaseService<TModel, TEntity> service, IMapper mapper, 
+                                 int depth = 2, IEnumerable<string> propertyTypesToExclude = default)
         {
             _service = service;
-            _depth = depth;
             _mapper = mapper;
+            _depth = depth;
+            _propertyTypesToExclude = propertyTypesToExclude;
         }
 
         [HttpPost("Get")]
         public virtual async Task<ActionResult<PagedResult<TGet>>> Read([FromBody] BaseQueryModel query)
         {
-            var data = await _service.GetAll(new EntityByUserIdSpecification<TEntity>(UserId), query);
+            var data = await _service.GetAll(new EntityByUserIdSpecification<TEntity>(UserId), query, false, _depth, _propertyTypesToExclude);
 
             return Ok(_mapper.Map<PagedResult<TGet>>(data));
         }
@@ -45,7 +49,7 @@ namespace FarmerApp.API.Controllers
         [HttpGet("{id:int}")]
         public virtual async Task<ActionResult<TGet>> ReadById([FromRoute][BindRequired] int id)
         {
-            var data = await _service.GetById(id);
+            var data = await _service.GetById(id, false, _depth, _propertyTypesToExclude);
             EnsureUserHasAccess(data);
 
             return Ok(_mapper.Map<TGet>(data));
@@ -57,7 +61,7 @@ namespace FarmerApp.API.Controllers
             var businessModel = _mapper.Map<TModel>(model);
             businessModel.UserId = UserId;
 
-            var data = await _service.Add(businessModel);
+            var data = await _service.Add(businessModel, _depth, _propertyTypesToExclude);
 
             return Ok(_mapper.Map<TGet>(data));
         }
@@ -73,7 +77,7 @@ namespace FarmerApp.API.Controllers
             // For checking if user has access to this record
             await ReadById(id);
 
-            var data = await _service.Update(businessModel);
+            var data = await _service.Update(businessModel, _depth, _propertyTypesToExclude);
 
             return Ok(_mapper.Map<TGet>(data));
         }
