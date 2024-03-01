@@ -4,6 +4,7 @@ using FarmerApp.Core.Utils;
 using FarmerApp.Data.DAO;
 using FarmerApp.Middlewares;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 #region Services
 
@@ -21,7 +22,6 @@ builder.Services.AddCustomAuthentication(appSettings);
 builder.Services.AddCustomServices();
 
 builder.Services.AddDbContext<FarmerDbContext>(opts =>opts.UseSqlServer(appSettings.ConnectionString), ServiceLifetime.Scoped);
-builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSeq());
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

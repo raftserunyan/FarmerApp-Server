@@ -79,8 +79,6 @@ jobs:
         --build-arg REFRESH_TOKEN_EXPIRY_MINUTES="${{ secrets.REFRESH_TOKEN_EXPIRY_MINUTES }}"
         --build-arg SEED_USERNAME="${{ secrets.SEED_USERNAME }}"
         --build-arg SEED_PASS="${{ secrets.SEED_PASS }}"
-        --build-arg SEQ_SERVER_URL="${{ secrets.SEQ_SERVER_URL }}"
-        --build-arg SEQ_API_KEY="${{ secrets.SEQ_API_KEY }}"
         --build-arg ENVIRONMENT="DEV"
         -t ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:dev
       

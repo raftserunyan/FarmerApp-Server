@@ -20,7 +20,7 @@ namespace FarmerApp.Core.Utils
             AccessTokenExpiryMinutes = int.Parse(GetSetting(configuration, "ACCESS_TOKEN_EXPIRY_MINUTES", "AccessTokenExpiryMinutes"));
             RefreshTokenExpiryMinutes = int.Parse(GetSetting(configuration, "REFRESH_TOKEN_EXPIRY_MINUTES", "RefreshTokenExpiryMinutes"));
 
-            Seq = new SeqSettings(configuration);
+            //Seq = new SeqSettings(configuration);
         }
 
         private static string GetSetting(IConfiguration configuration, string envVarName, string configName)
