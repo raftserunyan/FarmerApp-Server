@@ -1,6 +1,7 @@
 ﻿using FarmerApp.Data.Entities.Base;
 using FarmerApp.Data.Specifications.Common;
 using FarmerApp.Shared.Enums;
+using System.Linq.Expressions;
 
 namespace FarmerApp.Data.Repositories
 {
@@ -29,5 +30,6 @@ namespace FarmerApp.Data.Repositories
         void DeleteRange(IEnumerable<TEntity> entities, DeleteOptions deleteOption = DeleteOptions.Soft);
 
         Task<int> Count(ISpecification<TEntity> specification = null, bool includeDeleted = false);
+        Task<double> Sum(Expression<Func<TEntity, double>> propertySelector, ISpecification<TEntity> specification = null, bool includeDeleted = false);
     }
 }

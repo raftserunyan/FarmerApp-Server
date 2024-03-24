@@ -2,7 +2,6 @@ using AutoMapper;
 using FarmerApp.Core.Models.Investment;
 using FarmerApp.Core.Services.Common;
 using FarmerApp.Data.Entities;
-using FarmerApp.Data.Entities.Base;
 using FarmerApp.Data.Specifications.Expense;
 using FarmerApp.Data.Specifications.Investment;
 using FarmerApp.Data.UnitOfWork;

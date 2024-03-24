@@ -8,6 +8,7 @@ namespace FarmerApp.API.MapperProfiles
         public UtilsProfile()
         {
             CreateMap(typeof(PagedResult<>), typeof(PagedResult<>));
+            CreateMap(typeof(PagedExpensesResult<>), typeof(PagedExpensesResult<>));
         }
     }
 }

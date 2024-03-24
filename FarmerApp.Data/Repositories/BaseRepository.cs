@@ -5,6 +5,7 @@ using FarmerApp.Data.Specifications;
 using FarmerApp.Data.Specifications.Common;
 using FarmerApp.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace FarmerApp.Data.Repositories
 {
@@ -134,10 +135,28 @@ namespace FarmerApp.Data.Repositories
 
         public async Task<int> Count(ISpecification<TEntity> specification = null, bool includeDeleted = false)
         {
+            if (specification == null)
+            {
+                specification = new EmptySpecification<TEntity>();
+            }
+
             var query = ApplySpecification(specification, includeDeleted).AsNoTracking();
             var count = await query.CountAsync();
 
             return count;
+        }
+
+        public async Task<double> Sum(Expression<Func<TEntity, double>> propertySelector, ISpecification<TEntity> specification = null, bool includeDeleted = false)
+        {
+            if (specification == null)
+            {
+                specification = new EmptySpecification<TEntity>();
+            }
+
+            var query = ApplySpecification(specification, includeDeleted).AsNoTracking();
+            var sum = await query.SumAsync(propertySelector);
+
+            return sum;
         }
 
         #endregion

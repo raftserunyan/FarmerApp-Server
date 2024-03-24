@@ -10,4 +10,9 @@
 
         public int Total { get; set; }
     }
+
+    public class PagedExpensesResult<T> : PagedResult<T>
+    {
+        public double? TotalExpensesAmount { get; set; }
+    }
 }
