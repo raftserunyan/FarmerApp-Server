@@ -16,11 +16,11 @@ jobs:
       with:
         token: ${{ secrets.PAT }}
         fetch-depth: 2
-
+            
     - name: Check and increment version
       run: |
         CURRENT_VERSION=$(grep -oP 'Version = "\K[^"]+' FarmerApp.API/Utils/ServiceRegisterer.cs)
-
+            
         if git rev-list --max-count=1 HEAD -- FarmerApp.API/Utils/ServiceRegisterer.cs >/dev/null 2>&1; then
           git checkout $(git rev-list --max-count=1 HEAD^ -- FarmerApp.API/Utils/ServiceRegisterer.cs)
           PREVIOUS_VERSION=$(grep -oP 'Version = "\K[^"]+' FarmerApp.API/Utils/ServiceRegisterer.cs)
