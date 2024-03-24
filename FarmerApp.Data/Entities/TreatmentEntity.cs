@@ -16,7 +16,7 @@ namespace FarmerApp.Data.Entities
         public int? UserId { get; set; }
         public UserEntity User { get; set; }
 
-		public ICollection<ProductEntity> Products { get; set; }
+		public IEnumerable<ProductEntity> Products { get; set; }
 
     }
 }

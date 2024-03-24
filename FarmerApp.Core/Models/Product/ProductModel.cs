@@ -13,8 +13,8 @@ namespace FarmerApp.Core.Models.Product
         public int? UserId { get; set; }
         public UserModel User { get; set; }
 
-        public ICollection<SaleModel> Sales { get; set; }
-        public ICollection<TreatmentModel> Treatments { get; set; }
+        public IEnumerable<SaleModel> Sales { get; set; }
+        public IEnumerable<TreatmentModel> Treatments { get; set; }
     }
 }
 

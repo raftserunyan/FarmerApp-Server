@@ -1,4 +1,5 @@
 ﻿using FarmerApp.Data.DAO;
+using FarmerApp.Data.Entities;
 using FarmerApp.Data.Entities.Base;
 using FarmerApp.Data.Specifications;
 using FarmerApp.Data.Specifications.Common;

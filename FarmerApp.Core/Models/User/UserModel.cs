@@ -14,11 +14,11 @@ namespace FarmerApp.Core.Models.User
         public string Password { get; set; }
         public string RefreshToken { get; set; }
 
-        public ICollection<ProductModel> Products { get; set; }
-        public ICollection<CustomerModel> Customers { get; set; }
-        public ICollection<ExpenseModel> Expenses { get; set; }
-        public ICollection<InvestorModel> Investors { get; set; }
-        public ICollection<SaleModel> Sales { get; set; }
-        public ICollection<TreatmentModel> Treatments { get; set; }
+        public IEnumerable<ProductModel> Products { get; set; }
+        public IEnumerable<CustomerModel> Customers { get; set; }
+        public IEnumerable<ExpenseModel> Expenses { get; set; }
+        public IEnumerable<InvestorModel> Investors { get; set; }
+        public IEnumerable<SaleModel> Sales { get; set; }
+        public IEnumerable<TreatmentModel> Treatments { get; set; }
     }
 }

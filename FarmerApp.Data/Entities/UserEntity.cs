@@ -9,11 +9,11 @@ namespace FarmerApp.Data.Entities
         public string Password { get; set; }
         public string RefreshToken { get; set; }
 
-        public ICollection<ProductEntity> Products { get; set; }
-        public ICollection<CustomerEntity> Customers { get; set; }
-        public ICollection<ExpenseEntity> Expenses { get; set; }
-        public ICollection<InvestorEntity> Investors { get; set; }
-        public ICollection<SaleEntity> Sales { get; set; }
-        public ICollection<TreatmentEntity> Treatments { get; set; }
+        public IEnumerable<ProductEntity> Products { get; set; }
+        public IEnumerable<CustomerEntity> Customers { get; set; }
+        public IEnumerable<ExpenseEntity> Expenses { get; set; }
+        public IEnumerable<InvestorEntity> Investors { get; set; }
+        public IEnumerable<SaleEntity> Sales { get; set; }
+        public IEnumerable<TreatmentEntity> Treatments { get; set; }
     }
 }

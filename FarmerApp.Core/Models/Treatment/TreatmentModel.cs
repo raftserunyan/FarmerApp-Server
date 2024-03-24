@@ -19,7 +19,7 @@ namespace FarmerApp.Core.Models.Treatment
         public int? UserId { get; set; }
         public UserModel User { get; set; }
 
-        public ICollection<ProductModel> Products { get; set; }
+        public IEnumerable<ProductModel> Products { get; set; }
 
     }
 }

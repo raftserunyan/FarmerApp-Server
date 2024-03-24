@@ -4,6 +4,7 @@ using FarmerApp.Data.DAO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FarmerApp.Data.Migrations
 {
     [DbContext(typeof(FarmerDbContext))]
-    partial class FarmerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240324120004_InvestmenTotalAmountAdded")]
+    partial class InvestmenTotalAmountAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,14 +80,17 @@ namespace FarmerApp.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("Date")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("ExpenseAmount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ExpenseName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("InvestorId")
                         .HasColumnType("int");
@@ -94,9 +100,6 @@ namespace FarmerApp.Data.Migrations
 
                     b.Property<DateTime>("LastUpdatedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TargetId")
                         .HasColumnType("int");
@@ -475,7 +478,7 @@ namespace FarmerApp.Data.Migrations
             modelBuilder.Entity("FarmerApp.Data.Entities.ExpenseEntity", b =>
                 {
                     b.HasOne("FarmerApp.Data.Entities.InvestorEntity", "Investor")
-                        .WithMany("Expenses")
+                        .WithMany()
                         .HasForeignKey("InvestorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -612,8 +615,6 @@ namespace FarmerApp.Data.Migrations
 
             modelBuilder.Entity("FarmerApp.Data.Entities.InvestorEntity", b =>
                 {
-                    b.Navigation("Expenses");
-
                     b.Navigation("Investments");
                 });
 
