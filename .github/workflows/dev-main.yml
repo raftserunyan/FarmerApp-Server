@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline - DEV
 
 on:
   push:
@@ -9,7 +9,6 @@ on:
 jobs:
   increment-version-if-needed:
     runs-on: ubuntu-latest
-    #if: "!contains(github.event.head_commit.message, '[AUTO_INCREMENT]')"
     
     steps:
     - name: Checkout code
@@ -20,18 +19,19 @@ jobs:
 
     - name: Check and increment version
       run: |
-        CURRENT_VERSION=$(grep -oP 'Version = "\K[^"]+' FarmerApp/Program.cs)
-    
-        if git rev-list --max-count=1 HEAD -- FarmerApp/Program.cs >/dev/null 2>&1; then
-          git checkout $(git rev-list --max-count=1 HEAD^ -- FarmerApp/Program.cs) FarmerApp/Program.cs
-          PREVIOUS_VERSION=$(grep -oP 'Version = "\K[^"]+' FarmerApp/Program.cs)
+        CURRENT_VERSION=$(grep -oP 'Version = "\K[^"]+' FarmerApp.API/Utils/ServiceRegisterer.cs)
+
+        if git rev-list --max-count=1 HEAD -- FarmerApp.API/Utils/ServiceRegisterer.cs >/dev/null 2>&1; then
+          git checkout $(git rev-list --max-count=1 HEAD^ -- FarmerApp.API/Utils/ServiceRegisterer.cs)
+          PREVIOUS_VERSION=$(grep -oP 'Version = "\K[^"]+' FarmerApp.API/Utils/ServiceRegisterer.cs)
+          git checkout -
         else
           PREVIOUS_VERSION=""
         fi
-    
+
         if [ "$CURRENT_VERSION" = "$PREVIOUS_VERSION" ]; then
           IFS='.' read -ra VERSION_PARTS <<< "${CURRENT_VERSION//v}"
-    
+
           if [ "${VERSION_PARTS[-1]}" = "9" ]; then
             if [ "${VERSION_PARTS[-2]}" = "9" ]; then
               VERSION_PARTS[-1]=0
@@ -44,19 +44,19 @@ jobs:
           else
             VERSION_PARTS[-1]=$((VERSION_PARTS[-1] + 1))
           fi
-    
+
           IFS='.'; NEW_VERSION="v${VERSION_PARTS[*]}";
-          sed -i "s/$CURRENT_VERSION/$NEW_VERSION/g" FarmerApp/Program.cs
+          sed -i "s/$CURRENT_VERSION/$NEW_VERSION/g" FarmerApp.API/Utils/ServiceRegisterer.cs
         
           git config --global user.name "GitHub Actions"
           git config --global user.email "github-actions@github.com"
-          git add FarmerApp/Program.cs
+          git add FarmerApp.API/Utils/ServiceRegisterer.cs
           git commit -m "Increment version to $NEW_VERSION"
           git push
 
           exit 1
         fi
-
+        
   build-and-push:
     needs: increment-version-if-needed
     runs-on: ubuntu-latest
@@ -69,12 +69,6 @@ jobs:
       with:
         token: ${{ secrets.PAT }}
 
-    - name: Get application version
-      id: get_version
-      run: |
-        echo "current_version=$(grep -oP 'Version = "v\K[^"]+' FarmerApp/Program.cs)" >> $GITHUB_ENV
-        echo "::set-output name=current_version::$(grep -oP 'Version = "v\K[^"]+' FarmerApp/Program.cs)"
-
     - name: Build Docker image
       run: >
         docker build . 
@@ -82,15 +76,16 @@ jobs:
         --build-arg JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" 
         --build-arg JWT_REFRESH_SECRET_KEY="${{ secrets.JWT_REFRESH_SECRET_KEY }}" 
         --build-arg ACCESS_TOKEN_EXPIRY_MINUTES="${{ secrets.ACCESS_TOKEN_EXPIRY_MINUTES }}" 
-        --build-arg REFRESH_TOKEN_EXPIRY_MINUTES="${{ secrets.REFRESH_TOKEN_EXPIRY_MINUTES }}" 
-        #-t ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:$current_version
+        --build-arg REFRESH_TOKEN_EXPIRY_MINUTES="${{ secrets.REFRESH_TOKEN_EXPIRY_MINUTES }}"
+        --build-arg SEED_USERNAME="${{ secrets.SEED_USERNAME }}"
+        --build-arg SEED_PASS="${{ secrets.SEED_PASS }}"
+        --build-arg ENVIRONMENT="DEV"
         -t ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:dev
       
     - name: Login to Docker Hub
       run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
     - name: Push Docker image
-      #run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:$current_version
       run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:dev
 
   deploy-on-server:
@@ -118,7 +113,5 @@ jobs:
  
     - name: Deploy to server
       run: |
-        echo "${{ needs.build-and-push.outputs.current_version }}"
-        #ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:${{ needs.build-and-push.outputs.current_version }}"
         ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:dev"
         ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "cd /home/${{ secrets.REMOTE_SERVER_USERNAME }}/farmer && docker-compose up --no-deps dev_server -d"

@@ -9,7 +9,6 @@ on:
 jobs:
   increment-version-if-needed:
     runs-on: ubuntu-latest
-    #if: "!contains(github.event.head_commit.message, '[AUTO_INCREMENT]')"
     
     steps:
     - name: Checkout code
@@ -23,8 +22,9 @@ jobs:
         CURRENT_VERSION=$(grep -oP 'Version = "\K[^"]+' FarmerApp/Program.cs)
     
         if git rev-list --max-count=1 HEAD -- FarmerApp/Program.cs >/dev/null 2>&1; then
-          git checkout $(git rev-list --max-count=1 HEAD^ -- FarmerApp/Program.cs) FarmerApp/Program.cs
+          git checkout $(git rev-list --max-count=1 HEAD^ -- FarmerApp/Program.cs)
           PREVIOUS_VERSION=$(grep -oP 'Version = "\K[^"]+' FarmerApp/Program.cs)
+          git checkout -
         else
           PREVIOUS_VERSION=""
         fi
@@ -116,7 +116,5 @@ jobs:
  
     - name: Deploy to server
       run: |
-        echo "${{ needs.build-and-push.outputs.current_version }}"
         ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:${{ needs.build-and-push.outputs.current_version }}"
-        #ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "cd /home/${{ secrets.REMOTE_SERVER_USERNAME }}/farmer && docker-compose down"
         ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "cd /home/${{ secrets.REMOTE_SERVER_USERNAME }}/farmer && docker-compose up --no-deps server -d"
