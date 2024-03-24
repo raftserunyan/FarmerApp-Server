@@ -4,7 +4,6 @@ using FarmerApp.Core.Utils;
 using FarmerApp.Data.DAO;
 using FarmerApp.Middlewares;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
 
 #region Services
 
