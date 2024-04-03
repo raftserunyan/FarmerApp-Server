@@ -11,5 +11,10 @@ namespace FarmerApp.Core.Services.Sale
         public SaleService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
         }
+
+        public async Task<double> GetSumOfAllAmounts()
+        {
+            return await _uow.Repository<SaleEntity>().Sum(x => x.Paid);
+        }
     }
 }

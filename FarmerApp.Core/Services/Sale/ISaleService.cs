@@ -6,5 +6,6 @@ namespace FarmerApp.Core.Services.Sale
 {
     public interface ISaleService : IBaseService<SaleModel, SaleEntity>
     {
+        Task<double> GetSumOfAllAmounts();
     }
 }
