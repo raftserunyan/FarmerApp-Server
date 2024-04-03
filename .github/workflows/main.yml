@@ -85,13 +85,13 @@ jobs:
         --build-arg REFRESH_TOKEN_EXPIRY_MINUTES="${{ secrets.REFRESH_TOKEN_EXPIRY_MINUTES }}" 
         --build-arg SEED_USERNAME="${{ secrets.SEED_USERNAME }}"
         --build-arg SEED_PASS="${{ secrets.SEED_PASS }}"
-        -t ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:$current_version
+        -t ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:main
       
     - name: Login to Docker Hub
       run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
     - name: Push Docker image
-      run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:$current_version
+      run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:main
 
   deploy-on-server:
     needs: build-and-push
@@ -118,5 +118,5 @@ jobs:
  
     - name: Deploy to server
       run: |
-        ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:${{ needs.build-and-push.outputs.current_version }}"
+        ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/farmerapp-server:main"
         ssh ${{ secrets.REMOTE_SERVER_USERNAME }}@${{ secrets.REMOTE_SERVER_IP_ADDRESS }} "cd /home/${{ secrets.REMOTE_SERVER_USERNAME }}/farmer && docker-compose up --no-deps server -d"
