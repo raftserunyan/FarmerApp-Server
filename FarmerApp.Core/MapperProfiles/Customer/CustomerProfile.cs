@@ -10,7 +10,8 @@ namespace FarmerApp.Core.MapperProfiles.Customer
         {
             CreateMap<CustomerModel, CustomerEntity>().ReverseMap();
             CreateMap<CustomerEntity, CustomerEntity>()
-                .ForMember(d => d.User, opts => opts.Ignore());
+                .ForMember(d => d.User, opts => opts.Ignore())
+                .ForMember(d => d.Sales, opts => opts.Ignore());
         }
     }
 }

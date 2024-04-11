@@ -10,7 +10,8 @@ namespace FarmerApp.Core.MapperProfiles.Investment
         {
             CreateMap<InvestmentModel, InvestmentEntity>().ReverseMap();
             CreateMap<InvestmentEntity, InvestmentEntity>()
-                .ForMember(d => d.User, opts => opts.Ignore());
+                .ForMember(d => d.User, opts => opts.Ignore())
+                .ForMember(d => d.Investor, opts => opts.Ignore());
         }
     }
 }

@@ -13,6 +13,7 @@ namespace FarmerApp.Core.MapperProfiles.Treatment
             CreateMap<TreatmentEntity, TreatmentEntity>()
                 .IncludeBase<BaseEntity, BaseEntity>()
                 .ForMember(d => d.Products, opts => opts.Ignore())
+                .ForMember(d => d.MeasurementUnit, opts => opts.Ignore())
                 .ForMember(d => d.User, opts => opts.Ignore());
         }
     }

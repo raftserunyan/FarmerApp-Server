@@ -10,7 +10,9 @@ public class InvestorProfile : BaseProfile<InvestmentEntity>
     {
         CreateMap<InvestorModel, InvestorEntity>().ReverseMap();
         CreateMap<InvestorEntity, InvestorEntity>()
-            .ForMember(d => d.User, opts => opts.Ignore());
+            .ForMember(d => d.User, opts => opts.Ignore())
+            .ForMember(d => d.Investments, opts => opts.Ignore())
+            .ForMember(d => d.Expenses, opts => opts.Ignore());
     }
 }
 
