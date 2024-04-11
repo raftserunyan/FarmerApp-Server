@@ -9,7 +9,8 @@ namespace FarmerApp.Core.MapperProfiles.Product
         public ProductProfile()
         {
             CreateMap<ProductModel, ProductEntity>().ReverseMap();
-            CreateMap<ProductEntity, ProductEntity>();
+            CreateMap<ProductEntity, ProductEntity>()
+                .ForMember(d => d.User, opts => opts.Ignore());
         }
     }
 }

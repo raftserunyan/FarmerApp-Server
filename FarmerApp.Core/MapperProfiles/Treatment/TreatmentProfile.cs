@@ -12,7 +12,8 @@ namespace FarmerApp.Core.MapperProfiles.Treatment
             CreateMap<TreatmentModel, TreatmentEntity>().ReverseMap();
             CreateMap<TreatmentEntity, TreatmentEntity>()
                 .IncludeBase<BaseEntity, BaseEntity>()
-                .ForMember(d => d.Products, opts => opts.Ignore());
+                .ForMember(d => d.Products, opts => opts.Ignore())
+                .ForMember(d => d.User, opts => opts.Ignore());
         }
     }
 }

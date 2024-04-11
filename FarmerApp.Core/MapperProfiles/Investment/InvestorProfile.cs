@@ -9,7 +9,8 @@ public class InvestorProfile : BaseProfile<InvestmentEntity>
     public InvestorProfile()
     {
         CreateMap<InvestorModel, InvestorEntity>().ReverseMap();
-        CreateMap<InvestorEntity, InvestorEntity>();
+        CreateMap<InvestorEntity, InvestorEntity>()
+            .ForMember(d => d.User, opts => opts.Ignore());
     }
 }
 

@@ -9,7 +9,8 @@ namespace FarmerApp.Core.MapperProfiles.Sale
         public SaleProfile()
         {
             CreateMap<SaleModel, SaleEntity>().ReverseMap();
-            CreateMap<SaleEntity, SaleEntity>();
+            CreateMap<SaleEntity, SaleEntity>()
+                .ForMember(d => d.User, opts => opts.Ignore());
         }
     }
 }

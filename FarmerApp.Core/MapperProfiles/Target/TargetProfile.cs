@@ -9,7 +9,8 @@ namespace FarmerApp.Core.MapperProfiles.Target
         public TargetProfile()
         {
             CreateMap<TargetModel, TargetEntity>().ReverseMap();
-            CreateMap<TargetEntity, TargetEntity>();
+            CreateMap<TargetEntity, TargetEntity>()
+                .ForMember(d => d.User, opts => opts.Ignore());
         }
     }
 }

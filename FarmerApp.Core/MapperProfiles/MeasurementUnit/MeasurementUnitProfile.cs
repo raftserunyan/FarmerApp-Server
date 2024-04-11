@@ -9,7 +9,8 @@ namespace FarmerApp.Core.MapperProfiles.MeasurementUnit
         public MeasurementUnitProfile()
         {
             CreateMap<MeasurementUnitModel, MeasurementUnitEntity>().ReverseMap();
-            CreateMap<MeasurementUnitEntity, MeasurementUnitEntity>();
+            CreateMap<MeasurementUnitEntity, MeasurementUnitEntity>()
+                .ForMember(d => d.User, opts => opts.Ignore());
         }
     }
 }

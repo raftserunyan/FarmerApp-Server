@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using FarmerApp.Data.Entities.Base;
+using FarmerApp.Data.Entities.Interfaces;
+using System.Reflection;
 
 namespace FarmerApp.Core.MapperProfiles.Common
 {
