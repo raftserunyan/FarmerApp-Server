@@ -5,6 +5,7 @@ using FarmerApp.Core.Query.DynamicDepthBuilder;
 using FarmerApp.Core.Query.DynamicFilterBuilder.Builder;
 using FarmerApp.Core.Query.DynamicSortingBuilder;
 using FarmerApp.Core.Wrappers;
+using FarmerApp.Data.Entities;
 using FarmerApp.Data.Entities.Base;
 using FarmerApp.Data.Specifications.Common;
 using FarmerApp.Data.UnitOfWork;
@@ -44,6 +45,11 @@ namespace FarmerApp.Core.Services.Common
                 FilterResults(specification, query);
 
                 total = await _uow.Repository<TEntity>().Count(specification, includeDeleted);
+
+                // Exclude .User if it isn't already excluded
+                propertyTypesToExclude = (propertyTypesToExclude ?? Enumerable.Empty<string>())
+                    .Concat(new[] { nameof(UserEntity) })
+                    .Distinct();
 
                 IncludeDependenciesByDepth(specification, depth, propertyTypesToExclude);
                 OrderResults(specification, query.Orderings);
