@@ -1,6 +1,6 @@
 ﻿using FarmerApp.Data.Entities;
-using FarmerApp.Data.Entities.Base;
 using FarmerApp.Data.Extensions;
+using FarmerApp.Data.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace FarmerApp.Data.DAO
@@ -22,21 +22,11 @@ namespace FarmerApp.Data.DAO
         public DbSet<TargetEntity> Targets { get; set; }
         public DbSet<MeasurementUnitEntity> MeasurementUnits { get; set; }
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var entries = ChangeTracker.Entries().Where(e => e.Entity is BaseEntity && (e.State == EntityState.Added || e.State == EntityState.Modified));
+            optionsBuilder.AddInterceptors(new BaseEntityInterceptor());
 
-            foreach (var entry in entries)
-            {
-                ((BaseEntity)entry.Entity).LastUpdatedDate = DateTime.UtcNow;
-
-                if (entry.State == EntityState.Added)
-                {
-                    ((BaseEntity)entry.Entity).CreatedDate = DateTime.UtcNow;
-                }
-            }
-
-            return base.SaveChangesAsync(cancellationToken);
+            base.OnConfiguring(optionsBuilder);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
