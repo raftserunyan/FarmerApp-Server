@@ -13,7 +13,7 @@ namespace FarmerApp.API.Utils
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "FarmerAPI", Version = "v1.4.5" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "FarmerAPI", Version = "v1.4.6" });
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
