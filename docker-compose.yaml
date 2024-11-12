@@ -1,7 +1,7 @@
 version: '3.8'
 
 volumes:
-    dbdata:
+  dbdata:
 
 services:
   db:
@@ -17,7 +17,7 @@ services:
     volumes:
       - type: volume
         source: dbdata
-        target: /etc/${SERVER_USERNAME}/farmer/mssql
+        target: /var/opt/mssql
 
   server:
     container_name: server
