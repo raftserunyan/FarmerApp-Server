@@ -36,6 +36,12 @@ namespace FarmerApp.Data.Repositories
             var result = await ApplySpecification(specification, includeDeleted).ToListAsync();
             return result;
         }
+        
+        public IQueryable<TEntity> GetAllBySpecificationQueryable(ISpecification<TEntity> specification, bool includeDeleted = false)
+        {
+            var result = ApplySpecification(specification, includeDeleted);
+            return result;
+        }
 
         public async Task<TEntity> GetById(int id, bool includeDeleted = false, IEnumerable<string> propertyNamesToInclude = default)
         {

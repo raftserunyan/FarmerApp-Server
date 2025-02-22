@@ -14,5 +14,8 @@
     public class PagedExpensesResult<T> : PagedResult<T>
     {
         public double? TotalExpensesAmount { get; set; }
+        public double? CurrentYearExpensesAmount { get; set; }
+        public double? TotalFilteredAmount { get; set; }
+        public double? CurrentYearFilteredAmount { get; set; }
     }
 }

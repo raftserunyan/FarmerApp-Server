@@ -64,4 +64,24 @@ namespace FarmerApp.Data.Specifications.Common
         }
         #endregion
     }
+
+    public class RemoveDateFilterVisitor : ExpressionVisitor
+    {
+        protected override Expression VisitBinary(BinaryExpression node)
+        {
+            if (IsDateFilter(node))
+                return Expression.Constant(true);
+
+            return base.VisitBinary(node);
+        }
+
+        private bool IsDateFilter(BinaryExpression node)
+        {
+            if ((node.Left is MemberExpression leftMember && leftMember.Member.Name == "Date")
+                || (node.Right is MemberExpression rightMember && rightMember.Member.Name == "Date"))
+                return true;
+
+            return false;
+        }
+    }
 }
