@@ -11,6 +11,9 @@ namespace FarmerApp.Data.Entities
         public int InvestorId { get; set; }
         public InvestorEntity Investor { get; set; }
 
+        public int? TargetId { get; set; }
+        public TargetEntity Target { get; set; }
+
         public int? UserId { get; set; }
         public UserEntity User { get; set; }
     }
