@@ -8,7 +8,7 @@ using FarmerApp.Models.ViewModels.RequestModels;
 
 namespace FarmerApp.Controllers
 {
-    public class SalesController : BaseController<SaleEntity, SaleModel, SaleResponseModel, SaleRequestModel, SaleRequestModel>
+    public class SalesController : BaseControllerWithExcelExport<SaleEntity, SaleModel, SaleResponseModel, SaleRequestModel, SaleRequestModel, SaleExportModel>
     {
         public SalesController(IMapper mapper, ISaleService saleService)
            : base(saleService, mapper)

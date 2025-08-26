@@ -1,4 +1,8 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
 using FarmerApp.Core.Models;
 using FarmerApp.Core.Query;
 using FarmerApp.Core.Query.DynamicDepthBuilder;
@@ -10,7 +14,9 @@ using FarmerApp.Data.Entities.Base;
 using FarmerApp.Data.Specifications.Common;
 using FarmerApp.Data.UnitOfWork;
 using FarmerApp.Shared.Exceptions;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace FarmerApp.Core.Services.Common
 {
@@ -38,33 +44,26 @@ namespace FarmerApp.Core.Services.Common
         {
             specification ??= new EmptySpecification<TEntity>();
 
-            int? total = null;
-
-            if (query is not null)
-            {
-                FilterResults(specification, query);
-
-                total = await _uow.Repository<TEntity>().Count(specification, includeDeleted);
-
-                // Exclude .User if it isn't already excluded
-                propertyTypesToExclude = (propertyTypesToExclude ?? Enumerable.Empty<string>())
-                    .Concat(new[] { nameof(UserEntity) })
-                    .Distinct();
-
-                IncludeDependenciesByDepth(specification, depth, propertyTypesToExclude);
-                OrderResults(specification, query.Orderings);
-                ApplyPaging(specification, query);
-            }
+            int? total = await ApplyQueryToSpecificationAndReturnTotal(query, specification, includeDeleted, depth, propertyTypesToExclude);
 
             var entities = await _uow.Repository<TEntity>().GetAllBySpecification(specification, includeDeleted);
 
-            return new PagedResult<TModel>
-            {
-                Results = _mapper.Map<List<TModel>>(entities),
-                Total = total ?? entities.Count,
-                PageNumber = query?.PageNumber ?? 1,
-                PageSize = query?.PageSize ?? (total ?? entities.Count)
-            };
+            return GetPagedResult(total, entities, query);
+        }
+
+        public virtual async Task<byte[]> ExportData<TExport>(ISpecification<TEntity> specification, BaseQueryModel query = null, bool includeDeleted = false, int depth = 1, IEnumerable<string> propertyTypesToExclude = null)
+        {
+            specification ??= new EmptySpecification<TEntity>();
+
+            int? total = await ApplyQueryToSpecificationAndReturnTotal(query, specification, includeDeleted, depth, propertyTypesToExclude, applyPaging: false);
+
+            var mappedEntities = _uow.Repository<TEntity>()
+                .GetAllBySpecificationQueryable(specification, includeDeleted)
+                .ProjectTo<TExport>(_mapper.ConfigurationProvider);
+
+            var file = await GetExcelFileAsync(mappedEntities);
+
+            return file;
         }
 
         public virtual async Task<TModel> GetById(int id, bool includeDeleted = false,
@@ -238,6 +237,100 @@ namespace FarmerApp.Core.Services.Common
 
             specification.Criteria = Expression.Lambda<Func<TEntity, bool>>(filter, filterExpression.Parameters);
         }
+        
+        protected async Task<int?> ApplyQueryToSpecificationAndReturnTotal(BaseQueryModel query,
+            ISpecification<TEntity> specification,
+            bool includeDeleted = false,
+            int depth = 1,
+            IEnumerable<string> propertyTypesToExclude = null,
+            bool applyPaging = true,
+            bool applyOrdering = true)
+        {
+            int? total = null;
+            if (query is not null)
+            {
+                FilterResults(specification, query);
+
+                total = await _uow.Repository<TEntity>().Count(specification, includeDeleted);
+
+                // Exclude .User if it isn't already excluded
+                propertyTypesToExclude = (propertyTypesToExclude ?? Enumerable.Empty<string>())
+                    .Concat(new[] { nameof(UserEntity) })
+                    .Distinct();
+
+                IncludeDependenciesByDepth(specification, depth, propertyTypesToExclude);
+
+                if (applyOrdering)
+                    OrderResults(specification, query.Orderings);
+
+                if (applyPaging)
+                    ApplyPaging(specification, query);
+            }
+
+            return total;
+        }
+
+        protected PagedResult<TModel> GetPagedResult(int? total, List<TEntity> entities, BaseQueryModel query)
+        {
+            return new PagedResult<TModel>
+            {
+                Results = _mapper.Map<List<TModel>>(entities),
+                Total = total ?? entities.Count,
+                PageNumber = query?.PageNumber ?? 1,
+                PageSize = query?.PageSize ?? (total ?? entities.Count)
+            };
+        }
+
+        protected static async Task<byte[]> GetExcelFileAsync<T>(IQueryable<T> query)
+        {
+            var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            using (var stream = new MemoryStream())
+            {
+                using (var document = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook))
+                {
+                    var workbookPart = document.AddWorkbookPart();
+                    workbookPart.Workbook = new Workbook();
+
+                    var worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+                    var sheetData = new SheetData();
+                    worksheetPart.Worksheet = new Worksheet(sheetData);
+
+                    var sheets = document.WorkbookPart.Workbook.AppendChild(new Sheets());
+                    sheets.Append(new Sheet()
+                    {
+                        Id = document.WorkbookPart.GetIdOfPart(worksheetPart),
+                        SheetId = 1,
+                        Name = "Data"
+                    });
+
+                    // Header row
+                    var headerRow = new Row();
+                    foreach (var prop in properties)
+                    {
+                        headerRow.Append(new Cell() { DataType = CellValues.String, CellValue = new CellValue(prop.Name) });
+                    }
+                    sheetData.AppendChild(headerRow);
+
+                    // Data rows (streamed)
+                    await foreach (var item in query.AsAsyncEnumerable())
+                    {
+                        var newRow = new Row();
+                        foreach (var prop in properties)
+                        {
+                            var value = prop.GetValue(item)?.ToString() ?? "";
+                            newRow.Append(new Cell() { DataType = CellValues.String, CellValue = new CellValue(value) });
+                        }
+                        sheetData.AppendChild(newRow);
+                    }
+
+                    workbookPart.Workbook.Save();
+                }
+
+                return stream.ToArray();
+            }
+        }
+
         #endregion
 
         #region Private classes

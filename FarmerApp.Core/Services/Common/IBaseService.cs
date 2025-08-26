@@ -14,6 +14,7 @@ namespace FarmerApp.Core.Services.Common
         Task<TModel> GetFirstBySpecification(ISpecification<TEntity> specification, bool includeDeleted = false, int depth = 1, IEnumerable<string> propertyTypesToExclude = default);
         Task<PagedResult<TModel>> GetAll(BaseQueryModel query = null, bool includeDeleted = false, int depth = 1, IEnumerable<string> propertyTypesToExclude = default);
         Task<PagedResult<TModel>> GetAll(ISpecification<TEntity> specification, BaseQueryModel query = null, bool includeDeleted = false, int depth = 1, IEnumerable<string> propertyTypesToExclude = default);
+        Task<byte[]> ExportData<TExport>(ISpecification<TEntity> specification, BaseQueryModel query = null, bool includeDeleted = false, int depth = 1, IEnumerable<string> propertyTypesToExclude = default);
         Task<TModel> Add(TModel model, int depth = 1, IEnumerable<string> propertyTypesToExclude = default);
         Task<TModel> Update(TModel model, int depth = 1, IEnumerable<string> propertyTypesToExclude = default);
         Task Delete(TModel model);

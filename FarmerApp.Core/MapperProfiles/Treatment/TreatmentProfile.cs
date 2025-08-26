@@ -15,6 +15,10 @@ namespace FarmerApp.Core.MapperProfiles.Treatment
                 .ForMember(d => d.Products, opts => opts.Ignore())
                 .ForMember(d => d.MeasurementUnit, opts => opts.Ignore())
                 .ForMember(d => d.User, opts => opts.Ignore());
+
+            CreateMap<TreatmentEntity, TreatmentExportModel>()
+                .ForMember(d => d.DrugAmount, opts => opts.MapFrom(s => $"{s.DrugAmount} {s.MeasurementUnit.Name}"))
+                .ForMember(d => d.Products, opts => opts.MapFrom(s => string.Join(", ", s.Products.Select(x => x.Name))));
         }
     }
 }

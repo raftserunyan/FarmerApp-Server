@@ -15,6 +15,11 @@ namespace FarmerApp.Core.MapperProfiles.Sale
                 .ForMember(d => d.User, opts => opts.Ignore())
                 .ForMember(d => d.Product, opts => opts.Ignore())
                 .ForMember(d => d.Customer, opts => opts.Ignore());
+
+            CreateMap<SaleEntity, SaleExportModel>()
+                .ForMember(d => d.Product, opts => opts.MapFrom(s => s.Product.Name))
+                .ForMember(d => d.Customer, opts => opts.MapFrom(s => s.Customer.Name))
+                .ForMember(d => d.Credit, opts => opts.MapFrom(s => s.PriceKG * s.Weight - s.Paid));
         }
     }
 }

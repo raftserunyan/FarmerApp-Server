@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FarmerApp.Controllers
 {
-    public class ExpensesController : BaseController<ExpenseEntity, ExpenseModel, ExpenseResponseModel, ExpenseRequestModel, ExpenseRequestModel>
+    public class ExpensesController : BaseControllerWithExcelExport<ExpenseEntity, ExpenseModel, ExpenseResponseModel, ExpenseRequestModel, ExpenseRequestModel, ExpenseExportModel>
     {
         public ExpensesController(IMapper mapper, IExpenseService expenseService)
            : base(expenseService, mapper)

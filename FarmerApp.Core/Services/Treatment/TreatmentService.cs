@@ -27,22 +27,16 @@ namespace FarmerApp.Core.Services.Treatment
             }
 
             specification ??= new EmptySpecification<TreatmentEntity>();
-            int? total = null;
+            int? total = await ApplyQueryToSpecificationAndReturnTotal(
+                query,
+                specification,
+                includeDeleted,
+                depth,
+                propertyTypesToExclude,
+                false,
+                false);
 
-            if (query is not null)
-            {
-                FilterResults(specification, query);
-
-                total = await _uow.Repository<TreatmentEntity>().Count(specification, includeDeleted);
-
-                // Exclude .User if it isn't already excluded
-                propertyTypesToExclude = (propertyTypesToExclude ?? Enumerable.Empty<string>())
-                    .Concat(new[] { nameof(UserEntity) })
-                    .Distinct();
-
-                IncludeDependenciesByDepth(specification, depth, propertyTypesToExclude);
-            }
-
+            // NOTE: if you use GetAllBySpecificationQueryable here, the filter below won't work...
             var treatments = await _uow.Repository<TreatmentEntity>().GetAllBySpecification(specification, includeDeleted);
 
             if (treatedProductIdsFilter is not null)
@@ -60,15 +54,9 @@ namespace FarmerApp.Core.Services.Treatment
                 .Skip((query.PageNumber - 1) * query.PageSize)
                 .Take(query.PageSize).ToList();
 
-            return new PagedResult<TreatmentModel>
-            {
-                Results = _mapper.Map<List<TreatmentModel>>(treatments),
-                Total = total ?? treatments.Count,
-                PageNumber = query?.PageNumber ?? 1,
-                PageSize = query?.PageSize ?? (total ?? treatments.Count)
-            };
+            return GetPagedResult(total, treatments, query);
         }
-        
+
         public override async Task<TreatmentModel> Add(TreatmentModel model, int depth = 1, IEnumerable<string> propertyTypesToExclude = null)
         {
             var entity = ValidateAndMap(model, "Model to be added was null");

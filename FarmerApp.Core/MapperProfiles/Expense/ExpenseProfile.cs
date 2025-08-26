@@ -15,6 +15,10 @@ namespace FarmerApp.Core.MapperProfiles.Expense
                 .ForMember(d => d.User, opts => opts.Ignore())
                 .ForMember(d => d.Investor, opts => opts.Ignore())
                 .ForMember(d => d.Target, opts => opts.Ignore());
+
+            CreateMap<ExpenseEntity, ExpenseExportModel>()
+                .ForMember(d => d.Investor, opts => opts.MapFrom(s => s.Investor.Name))
+                .ForMember(d => d.Target, opts => opts.MapFrom(s => s.Target.Name));
         }
     }
 }

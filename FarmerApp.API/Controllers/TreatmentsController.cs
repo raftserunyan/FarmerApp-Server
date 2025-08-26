@@ -8,7 +8,7 @@ using FarmerApp.Models.ViewModels.RequestModels;
 
 namespace FarmerApp.Controllers
 {
-    public class TreatmentsController : BaseController<TreatmentEntity, TreatmentModel, TreatmentResponseModel, TreatmentRequestModel, TreatmentRequestModel>
+    public class TreatmentsController : BaseControllerWithExcelExport<TreatmentEntity, TreatmentModel, TreatmentResponseModel, TreatmentRequestModel, TreatmentRequestModel, TreatmentExportModel>
     {
         public TreatmentsController(IMapper mapper, ITreatmentService treatmentService)
            : base(treatmentService, mapper)
